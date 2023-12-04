@@ -1,0 +1,138 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">请假人<font class="red"> *</font></label>
+            <div class="col-sm-10">
+                <div id="userId" col="UserId"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">请假原因<font class="red"> *</font></label>
+            <div class="col-sm-10">
+                <div id="leaveKind" col="LeaveKind"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">请假时间</label>
+            <div class="col-sm-4">
+                <div id="leaveType" col="LeaveType"></div>
+            </div>
+            
+        </div>
+        <div class="form-group">
+
+            <label class="col-sm-2 control-label ">开始日期</label>
+            <div class="col-sm-4">
+                <input id="fromDay" col="FromDay" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">截至日期</label>
+            <div class="col-sm-4">
+                <input id="toDay" col="ToDay" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            
+            <label class="col-sm-2 control-label ">开始时间</label>
+            <div class="col-sm-4">
+                <input id="startTime" col="StartTime" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">截至时间</label>
+            <div class="col-sm-4">
+                <input id="endTime" col="EndTime" type="text" class="form-control" />
+            </div>
+        </div>
+
+        
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">说明</label>
+            <div class="col-sm-10">
+                <textarea id="remark" col="Remark" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        $("#leaveKind").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(LeaveKindEnum).EnumToDictionaryString())) });
+        $("#leaveType").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(LeaveTypeEnum).EnumToDictionaryString())) });
+
+        $('#userId').ysComboBoxTree({ url: '@Url.Content("~/OrganizationManage/Department/GetUserTreeListJson")' });
+
+        laydate.render({ elem: '#fromDay', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#toDay', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#startTime', format: 'HH:mm', type: 'time' });
+        laydate.render({ elem: '#endTime', format: 'HH:mm', type: 'time' });
+
+        getForm(id);
+
+        $("#form").validate({
+            rules: {
+                userId: { required: true },
+                // password: {
+                //     required: true,
+                //     minlength: 6,
+                //     maxlength: 20
+                // },
+                leaveType: { required: true },
+                leaveKind: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            //$('#password').attr("readonly", "readonly").attr("disabled", "disabled");
+
+            ys.ajax({
+                url: '@Url.Content("~/OrganizationManage/Leave/GetFormJson")' + '?id=' + id,
+                type: "get",
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        var result = obj.Data;
+                        $("#form").setWebControls(result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            defaultData.UserId = "";
+            defaultData.LeaveType = "@LeaveTypeEnum.Days.ParseToInt()";
+            defaultData.LeaveKind = "@LeaveKindEnum.Persanal.ParseToInt()";
+            defaultData.FromDay = new Date().toISOString().substring(0, 10);
+            defaultData.ToDay = new Date().toISOString().substring(0, 10);
+            defaultData.StartTime = "00:00";
+            defaultData.EndTime = "23:59";
+            $("#form").setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            //alert(JSON.stringify(postData))
+            postData.UserId = ys.getLastValue(postData.UserId);
+            ys.ajax({
+                url: '@Url.Content("~/OrganizationManage/Leave/SaveFormJson")',
+                type: "post",
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
