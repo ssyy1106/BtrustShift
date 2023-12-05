@@ -19,10 +19,28 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
     [Area("OrganizationManage")]
     public class ShiftController : Controller
     {
+        class CheckResult
+        {
+            public bool ok { get; set; }
+            public List<string> message { get; set; }
+
+            public CheckResult()
+            {
+                message = new();
+                ok = true;
+            }
+        }
         private ShiftService shiftService = new ShiftService();
         private DepartmentBLL departmentBLL = new DepartmentBLL();
+        private UserBLL userBLL = new UserBLL();
+        private LeaveService leaveService = new LeaveService();
         #region 视图功能
         public IActionResult ShiftIndex()
+        {
+            return View();
+        }
+
+        public IActionResult ExamineShift()
         {
             return View();
         }
@@ -35,6 +53,32 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             TData<List<ShiftAllDetailEntity>> obj = new TData<List<ShiftAllDetailEntity>>();
             obj.Tag = 1;
             obj.Data = await GetListJson(param);
+            return Json(obj);
+        }
+
+        [HttpGet]
+        //public async Task<List<string>> ExamineShiftJson(string periodBegin)
+        public async Task<IActionResult> ExamineShiftJson(string periodBegin)
+        {
+            TData<List<string>> obj = new()
+            {
+                Tag = 1
+            };
+            List<string> result = new();
+            // 读取所有人的排班记录
+            ShiftParam param = new() { PeriodBegin = periodBegin };
+            List<ShiftAllDetailEntity> list = await shiftService.GetPageList(param);
+            foreach (ShiftAllDetailEntity shift in list)
+            {
+                CheckResult res = await check(shift, periodBegin);
+                if (!res.ok)
+                {
+                    result.AddRange(res.message);
+                    //result.Add("\\n");
+                }
+            }
+            obj.Data = result;
+
             return Json(obj);
         }
         #endregion
@@ -72,6 +116,43 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             return Json(obj);
         }
         #endregion
+        private async Task<CheckResult> check(ShiftAllDetailEntity shift, string periodBegin)
+        {
+            CheckResult res = new();
+            // 读取该用户的请假记录
+            List<LeaveAllEntity> leaves = await leaveService.GetListByUserId(shift.UserId, periodBegin);
+            // 读取人员基本信息
+            TData<UserEntity> obj = await userBLL.GetEntity((long)shift.UserId);
+            if (obj.Tag == 1)
+            {
+                UserEntity user = obj.Data;
+                // 检查人员type和category是否符合排班
+                int? type = user.Type;
+                int? category = user.Category;
+                int totalHours = shift.TotalHours;
+                if (category == 0 && totalHours > 44)
+                {
+                    string message = $"User {shift.RealName} with id {shift.BtrustId} has a category Hourly, but work over 44 hours, total hours is {totalHours} hours.";
+                    res.message.Add(message);
+                    res.ok = false;
+                } else if (category == 1 && totalHours > 54 && shift.DepartmentName.Length >= 7
+                    && shift.DepartmentName.Substring(shift.DepartmentName.Length - 7, 7) == "Kitchen")
+                {
+                    string message = $"User {shift.RealName} with id {shift.BtrustId} has a category Weekly and working in Kitchen, but work over 54 hours, total hours is {totalHours} hours.";
+                    res.message.Add(message);
+                    res.ok = false;
+                }
+                else if (category == 1 && totalHours > 66)
+                {
+                    string message = $"User {shift.RealName} with id {shift.BtrustId} has a category Weekly, but work over 66 hours, total hours is {totalHours} hours.";
+                    res.message.Add(message);
+                    res.ok = false;
+                }
+            }
+            // 检查请假信息和排班是否吻合
+            
+            return res;
+        }
         private async Task<List<ShiftAllDetailEntity>> GetListJson(ShiftParam param)
         {
             List<ShiftAllDetailEntity> res = new List<ShiftAllDetailEntity>();

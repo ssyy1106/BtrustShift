@@ -60,25 +60,14 @@ namespace YiSha.Service.OrganizationManage
             return await this.BaseRepository().FindEntity<LeaveEntity>(id);
         }
 
-        //public async Task<UserEntity> GetEntity(string userName)
-        //{
-        //    return await this.BaseRepository().FindEntity<UserEntity>(p => p.UserName == userName);
-        //}
+        public async Task<List<LeaveAllEntity>> GetListByUserId(long? userId, string periodBegin)
+        {
+            var strSql = new StringBuilder();
+            List<DbParameter> filter = ListFilterByUserId(userId, periodBegin, strSql);
+            var list = await this.BaseRepository().FindList<LeaveAllEntity>(strSql.ToString(), filter.ToArray());
+            return list.ToList();
+        }
 
-        //public bool ExistUserName(UserEntity entity)
-        //{
-        //    var expression = LinqExtensions.True<UserEntity>();
-        //    expression = expression.And(t => t.BaseIsDelete == 0);
-        //    if (entity.Id.IsNullOrZero())
-        //    {
-        //        expression = expression.And(t => t.UserName == entity.UserName);
-        //    }
-        //    else
-        //    {
-        //        expression = expression.And(t => t.UserName == entity.UserName && t.Id != entity.Id);
-        //    }
-        //    return this.BaseRepository().IQueryable(expression).Count() > 0 ? true : false;
-        //}
         #endregion
 
         #region 提交数据
@@ -168,6 +157,30 @@ namespace YiSha.Service.OrganizationManage
                     strSql.Append(@" and (SysLeave.FromDay <= '" + param.ToDay + "' or SysLeave.ToDay <= '" + param.ToDay + "')");
                     //parameter.Add(DbParameterExtension.CreateDbParameter("@FromDay", param.FromDay));
                 }
+            }
+            return parameter;
+        }
+
+        private List<DbParameter> ListFilterByUserId(long? userId, string periodBegin, StringBuilder strSql)
+        {
+            string periodEnd = DateTime.Parse(periodBegin).AddDays(6).ToString("yyyy-MM-dd");
+            strSql.Append(@"select SysLeave.Id as Id, SysUser.UserName as UserName, SysUser.RealName as RealName, 
+                            SysDepartment.DepartmentName as DepartmentName, FromDay, ToDay, StartTime, 
+                            EndTime,
+                            case LeaveType when 0 then N'天' else N'时间段' end as LeaveType, 
+                            case LeaveKind when 0 then N'事假' when 1 then N'年假' when 2 then N'病假' else N'其它' end as LeaveKind,
+                            SysLeave.Remark  as Remark  
+                            from SysLeave inner join SysUser on SysUser.Id=SysLeave.UserId inner join 
+                            SysDepartment on SysDepartment.Id=SysUser.DepartmentId where 1=1");
+            var parameter = new List<DbParameter>();
+            if (userId != null)
+            {
+                strSql.Append(@" and SysUser.Id=" + userId);
+            }
+            if (periodBegin != null)
+            {
+                strSql.Append(@" and SysLeave.FromDay<='" + periodEnd + "'");
+                strSql.Append(@" and SysLeave.ToDay>='" + periodBegin + "'");
             }
             return parameter;
         }

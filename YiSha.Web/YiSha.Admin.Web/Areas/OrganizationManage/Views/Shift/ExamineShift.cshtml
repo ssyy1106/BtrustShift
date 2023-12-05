@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">周期</label>
+            <div class="col-sm-4">
+                <input id="periodBegin"  type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">排班数据核查</label>
+            <div class="col-sm-10">
+                <textarea id="shiftData" class="form-control" style="height:300px"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">打卡数据核查</label>
+            <div class="col-sm-10">
+                <textarea id="punchData" class="form-control" style="height:300px"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var periodBegin = ys.request("periodBegin");
+    $(function () {
+        $('#periodBegin').val(periodBegin);
+        checkShiftData(periodBegin);
+        // let shiftMessage = checkShiftData(periodBegin);
+        // $('#shiftData').val(shiftMessage)
+        // let punchMessage = checkPunchData(periodBegin);
+        $('#punchData').val("ok");
+    });
+
+    function checkShiftData(periodBegin) {
+        // 读取所有人的人员基本信息
+        // 读取所有人的排班记录
+        // 读取所有人的请假记录
+        // 检查人员type和category是否符合排班
+        // 检查请假信息和排班是否吻合
+        // 检查punch是否和排班吻合
+        var postData = periodBegin;
+        ys.ajax({
+            url: '@Url.Content("~/OrganizationManage/Shift/ExamineShiftJson")' + '?periodBegin=' + periodBegin,
+            type: "get",
+            //data: postData,
+            success: function (obj) {
+                if (obj.Tag == 1) {
+                    //const sentences = obj.Data.split(',');
+                    let messages = "";
+                    for (let s of obj.Data) { 
+                         messages = messages + s + '\r\n';
+                    //     //$('#shiftData').val($('#shiftData').val() + s + '\r\n');
+                    }
+                    $('#shiftData').val(messages);
+                }
+                else {
+                    $('#shiftData').val("读取数据失败，请联系管理员");
+                }
+            }
+        });
+    }
+</script>

@@ -54,8 +54,9 @@
             </div>
         </div>
         <div class="btn-group-sm" id="toolbar">
-            <a id="btnSubmit" class="btn btn-warning" onclick="removeAllForm()"><i class="fa fa-plus"></i> 提交</a>
-            <a id="btnExport" class="btn btn-warning" onclick="exportForm()"><i class="fa fa-download"></i> 导出</a>
+            <a id="btnSubmit" class="btn btn-primary" onclick="removeAllForm()"><i class="fa fa-plus"></i> 提交</a>
+            <a id="btnExport" class="btn btn-primary" onclick="exportForm()"><i class="fa fa-download"></i> 导出</a>
+            <a id="btnExamine" class="btn btn-primary" onclick="examineForm()"><i class="fa fa-eye"></i> 检查</a>
         </div>
 
         <div class="col-sm-12 select-table table-bordered">
@@ -174,6 +175,17 @@
         ys.exportExcel(url, postData);
     }
 
+    function examineForm() {
+        ys.openDialog({
+            title: "数据核查",
+            content: '@Url.Content("~/OrganizationManage/Shift/ExamineShift")' + '?periodBegin=' + $('#periodBegin').val(),
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
     function initGrid() {
         var queryUrl = '@Url.Content("~/OrganizationManage/Shift/GetPageListJson")';
         $('#gridTable').ysTable({
@@ -239,7 +251,7 @@
                         align: 'center',
                         formatter: function (value, row, index) {
                             var actions = [];
-                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="AppendShift(\'' + index + '\')"><i class="fa fa-plus"></i>Append</a>');
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="AppendShift(\'' + index + '\')"><i class="fa fa-plus"></i>添加班次</a>');
                             return actions.join('');
                         }
                     },
