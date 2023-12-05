@@ -66,19 +66,14 @@
 
 <script type="text/javascript">
     $(function () {
-        // $("#departments").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(OperateStatusEnum).EnumToDictionaryString())) });
-        //$("#departments").ysComboBox({ key: "id", value: "name", url: '@Url.Content("~/OrganizationManage/Department/GetDepartmentTreeListJson")' });
         laydate.render({ elem: '#periodBegin', format: 'yyyy-MM-dd', done: adjustBeginDate });
         laydate.render({ elem: '#periodEnd', format: 'yyyy-MM-dd', done: adjustEndDate });
-        //$('#periodBegin').val(new Date().toISOString().slice(0, 10))
-        //$('#periodEnd').val(new Date().toISOString().slice(0, 10))
 
-        let whichDay = new Date().getDay()
+        let whichDay = new Date().getUTCDay()
         if (whichDay == 0) {
             whichDay = 7
         }
         let beginDate = new Date()
-        //alert(beginDate.toISOString().slice(0, 10))
         beginDate.setDate(beginDate.getDate() - whichDay + 1)
         let endD = new Date(beginDate)
         endD.setDate(endD.getDate() + 6)
@@ -132,7 +127,7 @@
     }
 
     function adjustBeginDate(value, date, endDate) {
-        let whichDay = new Date(value).getDay()
+        let whichDay = new Date(value).getUTCDay()
         let beginDate = new Date(value)
         beginDate.setDate(beginDate.getDate() - whichDay)
         let endD = new Date(beginDate)
@@ -142,7 +137,7 @@
     }
 
     function adjustEndDate(value, date, endDate) {
-        let whichDay = new Date(value).getDay()
+        let whichDay = new Date(value).getUTCDay()
         let endD = new Date(value)
         endD.setDate(endD.getDate() + 6 - whichDay)
         let beginDate = new Date(endD)
@@ -185,7 +180,7 @@
             url: queryUrl,
             sortOrder: 'asc',
             onEditableSave: onEditableSave,
-            sortable: false,
+            sortable: true,
             sortStable: true,
             sortName: 'DepartmentId',
             //rowStyle: rowStyle,
@@ -437,34 +432,11 @@
         });
     }
     function AppendShift(index) {
-        //alert(index)
         let tableData = $("#gridTable").bootstrapTable("getData")
         let row = tableData[index]
         $("#gridTable").bootstrapTable("insertRow", { index: index, row: row });
         
-        searchGrid();
-        alert('ok')
-        //$("#gridTable").options.data.splice(index, 0, row);
-        //$("#gridTable").bootstrapTable("refresh");
-        //$("#gridTable").bootstrapTable("insertRow", { index: index, row: { id: 123, TotalHours: 100 });
-
-        // var postData = {};
-        // postData.Id = id;
-        // postData.JobStatus = jobStatus;
-        // ys.ajax({
-        //     url: '@Url.Content("~/SystemManage/AutoJob/ChangeJobStatusJson")',
-        //     type: "post",
-        //     data: postData,
-        //     success: function (obj) {
-        //         if (obj.Tag == 1) {
-        //             ys.msgSuccess(obj.Message);
-        //             searchGrid();
-        //         }
-        //         else {
-        //             ys.msgError(obj.Message);
-        //         }
-        //     }
-        // });
+        //searchGrid();
     }
 
     function getHours(row) {
