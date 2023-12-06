@@ -130,7 +130,7 @@
     function adjustBeginDate(value, date, endDate) {
         let whichDay = new Date(value).getUTCDay()
         let beginDate = new Date(value)
-        beginDate.setDate(beginDate.getDate() - whichDay)
+        beginDate.setDate(beginDate.getDate() - whichDay + 1)
         let endD = new Date(beginDate)
         endD.setDate(endD.getDate() + 6)
         $('#periodBegin').val(beginDate.toISOString().slice(0, 10))
@@ -140,7 +140,7 @@
     function adjustEndDate(value, date, endDate) {
         let whichDay = new Date(value).getUTCDay()
         let endD = new Date(value)
-        endD.setDate(endD.getDate() + 6 - whichDay)
+        endD.setDate(endD.getDate() + 7 - whichDay)
         let beginDate = new Date(endD)
         beginDate.setDate(beginDate.getDate() - 6)
         $('#periodBegin').val(beginDate.toISOString().slice(0, 10))

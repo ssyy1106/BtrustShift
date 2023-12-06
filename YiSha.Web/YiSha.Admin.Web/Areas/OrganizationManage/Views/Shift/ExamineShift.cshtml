@@ -28,12 +28,14 @@
 <script type="text/javascript">
     var periodBegin = ys.request("periodBegin");
     $(function () {
+        $('#punchData').val("ok");
+        
         $('#periodBegin').val(periodBegin);
         checkShiftData(periodBegin);
         // let shiftMessage = checkShiftData(periodBegin);
         // $('#shiftData').val(shiftMessage)
         // let punchMessage = checkPunchData(periodBegin);
-        $('#punchData').val("ok");
+        
     });
 
     function checkShiftData(periodBegin) {
@@ -51,12 +53,19 @@
             success: function (obj) {
                 if (obj.Tag == 1) {
                     //const sentences = obj.Data.split(',');
+                    let number = 1;
                     let messages = "";
-                    for (let s of obj.Data) { 
-                         messages = messages + s + '\r\n';
+                    for (let s of obj.Data) {
+                        messages = messages + number + ". " + s + '\r\n';
+                        number += 1;
                     //     //$('#shiftData').val($('#shiftData').val() + s + '\r\n');
                     }
-                    $('#shiftData').val(messages);
+                    if (messages == "") {
+                        $('#shiftData').val("ok");
+                    } else {
+                        $('#shiftData').val(messages);
+                    }
+                    
                 }
                 else {
                     $('#shiftData').val("读取数据失败，请联系管理员");
