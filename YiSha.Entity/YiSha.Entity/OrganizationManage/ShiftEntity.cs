@@ -80,10 +80,14 @@ namespace YiSha.Entity.OrganizationManage
         public long? DepartmentId { get; set; }
 
         public string Remark { get; set; }
+        [Description("用户姓名")]
         public string RealName { get; set; }
+        [Description("部门")]
         public string DepartmentName { get; set; }
 
+        [Description("用户ID")]
         public string BtrustId { get; set; }
+        [Description("工作总时长")]
         public int TotalHours { get; set; }
         public int RegularHours { get; set; }
         public int BreakHours { get; set; }

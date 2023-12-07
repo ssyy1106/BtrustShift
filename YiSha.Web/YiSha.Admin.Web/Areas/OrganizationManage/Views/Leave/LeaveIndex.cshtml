@@ -81,8 +81,6 @@
 
         $('body').layout({ west__size: 185 });
 
-        
-
         $('#btnExpand').click(function () {
             var tree = $.fn.zTree.getZTreeObj("departmentTree");
             tree.expandAll(true);
@@ -127,12 +125,33 @@
                 { field: 'UserName', title: '登录名', sortable: true },
                 { field: 'RealName', title: '姓名', sortable: false },
                 { field: 'DepartmentName', title: '部门', sortable: false },
-                { field: 'LeaveType', title: '请假模式', sortable: false },
+                { field: 'LeaveType', title: '请假模式', sortable: false,
+                    formatter: function (value, row, index) {
+                        if (row['LeaveType'] == 0) {
+                            return "天";
+                        } else {
+                            return "时间段";
+                        }
+                    }
+                },
                 { field: 'FromDay', title: '开始日期', sortable: false },
                 { field: 'ToDay', title: '截至日期', sortable: false },
                 { field: 'StartTime', title: '开始时间', sortable: false },
                 { field: 'EndTime', title: '截至时间', sortable: false },
-                { field: 'LeaveKind', title: '请假原因', sortable: false },
+                {
+                    field: 'LeaveKind', title: '请假原因', sortable: false,
+                    formatter: function (value, row, index) {
+                        if (row['LeaveKind'] == 0) {
+                            return "事假";
+                        } else if (row['LeaveKind'] == 1) {
+                            return "年假";
+                        } else if (row['LeaveKind'] == 2) {
+                            return "病假";
+                        } else {
+                            return "其它";
+                        }
+                    }
+                },
                 { field: 'Remark', title: '说明', sortable: false }
             ],
             queryParams: function (params) {

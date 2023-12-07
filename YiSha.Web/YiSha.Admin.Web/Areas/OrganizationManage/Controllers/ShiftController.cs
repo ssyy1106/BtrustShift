@@ -13,6 +13,7 @@ using YiSha.Util.Model;
 using YiSha.Cache.Factory;
 using YiSha.Web.Code;
 using YiSha.Admin.Web.Controllers;
+using NPOI.SS.Formula.Functions;
 
 namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
 {
@@ -35,11 +36,11 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
         private UserBLL userBLL = new UserBLL();
         private LeaveService leaveService = new LeaveService();
         #region 视图功能
+        [AuthorizeFilter("organization:shift:view")]
         public IActionResult ShiftIndex()
         {
             return View();
         }
-
         public IActionResult ExamineShift()
         {
             return View();
@@ -48,6 +49,7 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
 
         #region 获取数据
         [HttpGet]
+        [AuthorizeFilter("organization:shift:view")]
         public async Task<IActionResult> GetPageListJson(ShiftParam param)
         {
             TData<List<ShiftAllDetailEntity>> obj = new TData<List<ShiftAllDetailEntity>>();
@@ -57,7 +59,7 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
         }
 
         [HttpGet]
-        //public async Task<List<string>> ExamineShiftJson(string periodBegin)
+        [AuthorizeFilter("organization:shift:examine")]
         public async Task<IActionResult> ExamineShiftJson(string periodBegin)
         {
             TData<List<string>> obj = new()
@@ -85,6 +87,7 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
 
         #region 提交数据
         [HttpPost]
+        [AuthorizeFilter("organization:shift:submit")]
         public async Task<IActionResult> SubmitFormJson(ShiftAllEntity entity)
         {
             await shiftService.SaveForm(entity);
@@ -116,11 +119,24 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             return Json(obj);
         }
         #endregion
+
+        #region 私有函数
+        private bool checkLeave(string fromDay, string toDay, ShiftAllDetailEntity shift, string startTime ="00:00", string endTime="23:59")
+        {
+            string[] days = {
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            };
+            return true;
+        }
         private async Task<CheckResult> check(ShiftAllDetailEntity shift, string periodBegin)
         {
             CheckResult res = new();
-            // 读取该用户的请假记录
-            List<LeaveAllEntity> leaves = await leaveService.GetListByUserId(shift.UserId, periodBegin);
             // 读取人员基本信息
             TData<UserEntity> obj = await userBLL.GetEntity((long)shift.UserId);
             if (obj.Tag == 1)
@@ -150,7 +166,38 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
                 }
             }
             // 检查请假信息和排班是否吻合
-            
+            // 读取该用户的请假记录
+            List<LeaveAllEntity> leaves = await leaveService.GetListByUserId(shift.UserId, periodBegin);
+            foreach (LeaveAllEntity leave in leaves)
+            {
+                if (leave != null)
+                {
+                    if (leave.LeaveType == 0)
+                    {
+                        string fromDay = leave.FromDay;
+                        string toDay = leave.ToDay;
+                        if (!checkLeave(fromDay, toDay, shift))
+                        {
+                            string message = $"User {shift.RealName} with id {shift.BtrustId} has a leave from {fromDay} to {toDay}, cannot be set a shift.";
+                            res.message.Add(message);
+                            res.ok = false;
+                        }
+                    }
+                    else
+                    {
+                        string fromDay = leave.FromDay;
+                        string toDay = leave.ToDay;
+                        string startTime = leave.StartTime;
+                        string endTime = leave.EndTime;
+                        if (!checkLeave(fromDay, toDay, shift, startTime, endTime))
+                        {
+                            string message = $"User {shift.RealName} with id {shift.BtrustId} has a leave from {fromDay} to {toDay} from {startTime} to {endTime}, cannot be set a shift.";
+                            res.message.Add(message);
+                            res.ok = false;
+                        }
+                    }
+                }
+            }
             return res;
         }
         private async Task<List<ShiftAllDetailEntity>> GetListJson(ShiftParam param)
@@ -190,5 +237,6 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             res = res.OrderBy(o => o.DepartmentId).ToList();
             return res;
         }
+        #endregion
     }
 }

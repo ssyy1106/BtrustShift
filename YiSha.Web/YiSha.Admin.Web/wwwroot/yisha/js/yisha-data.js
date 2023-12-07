@@ -68,7 +68,6 @@
                     buttonList.forEach(function (btn, btnIndex) {
                         var authorize = module.toLowerCase() + ':' + page.toLowerCase() + ':' + btn.toString().replace('btn', '').toLowerCase();
                         var hasAuthority = false;
-
                         dataAuthority.MenuAuthorize.forEach(function (authority, authorityIndex) {
                             if (authority.Authorize == authorize) {
                                 hasAuthority = true;

@@ -32,12 +32,17 @@ namespace YiSha.Entity.OrganizationManage
         [JsonConverter(typeof(StringJsonConverter))]
         public long Id { get; set; }
         [JsonConverter(typeof(StringJsonConverter))]
+        public long UserId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        [Description("登录名")]
         public string UserName { get; set; }
+        [Description("姓名")]
         public string RealName { get; set; }
+        [Description("部门")]
         public string DepartmentName { get; set; }
-        public string LeaveType { get; set; }
+        public int? LeaveType { get; set; }
 
-        public string LeaveKind { get; set; }
+        public int? LeaveKind { get; set; }
         public string FromDay { get; set; }
 
         public string ToDay { get; set; }

@@ -220,7 +220,8 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
                 List<LeaveAllEntity> list;
                 if (page)
                 {
-                    list = await LeaveService.GetPageList(p, pagination);
+                    //list = await LeaveService.GetPageList(p, pagination);
+                    list = await LeaveService.GetList(p);
                 } else
                 {
                     list = await LeaveService.GetList(p);
