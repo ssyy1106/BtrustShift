@@ -13,7 +13,6 @@ using YiSha.Util.Model;
 using YiSha.Cache.Factory;
 using YiSha.Web.Code;
 using YiSha.Admin.Web.Controllers;
-using NPOI.SS.Formula.Functions;
 
 namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
 {
