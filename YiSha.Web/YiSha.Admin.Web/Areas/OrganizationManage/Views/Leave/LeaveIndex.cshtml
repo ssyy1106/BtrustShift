@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
 }
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @section header{
     @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
@@ -15,13 +16,13 @@
         <div class="box box-main">
             <div class="box-header">
                 <div class="box-title">
-                    组织机构
+                    @localizer["Organization"].Value
                 </div>
                 <div class="box-tools pull-right">
-                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="管理部门"><i class="fa fa-edit"></i></a>
-                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="@localizer["Manage Department"].Value"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="@localizer["Expand"].Value" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="@localizer["Collapse"].Value"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="@localizer["Refresh Department"].Value"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
             <div class="ui-layout-content">
@@ -38,26 +39,26 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        登录名称：<input id="userName" col="UserName" type="text" />
+                        @localizer["User Name"].Value：<input id="userName" col="UserName" type="text" />
                     </li>
                     <li class="select-time">
-                        <label>请假时间： </label>
-                        <input id="fromDay" col="FromDay" type="text" class="time-input" placeholder="开始时间" />
+                        <label>@localizer["Shift Period:"].Value </label>
+                        <input id="fromDay" col="FromDay" type="text" class="time-input" placeholder="@localizer["begin Time"].Value" />
                         <span>-</span>
-                        <input id="toDay" col="ToDay" type="text" class="time-input" placeholder="结束时间" />
+                        <input id="toDay" col="ToDay" type="text" class="time-input" placeholder="@localizer["End Time"].Value" />
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div id="toolbar" class="btn-group-sm">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
-            <a id="btnExport" class="btn btn-warning" onclick="exportForm()"><i class="fa fa-download"></i> 导出</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> @localizer["Add"].Value</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> @localizer["Edit"].Value</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> @localizer["Delete"].Value</a>
+            <a id="btnExport" class="btn btn-warning" onclick="exportForm()"><i class="fa fa-download"></i> @localizer["Export"].Value</a>
         </div>
 
         <div class="col-sm-12 select-table table-striped">
@@ -122,37 +123,38 @@
             columns: [
                 { checkbox: true, visible: true },
                 //{ field: 'Id', title: 'Id', visible: false },
-                { field: 'UserName', title: '登录名', sortable: true },
-                { field: 'RealName', title: '姓名', sortable: false },
-                { field: 'DepartmentName', title: '部门', sortable: false },
-                { field: 'LeaveType', title: '请假模式', sortable: false,
+                { field: 'UserName', title: '@localizer["User Name"].Value', sortable: true },
+                { field: 'RealName', title: '@localizer["Real Name"].Value', sortable: false },
+                { field: 'DepartmentName', title: '@localizer["Department"].Value', sortable: false },
+                {
+                    field: 'LeaveType', title: '@localizer["Leave Type"].Value', sortable: false,
                     formatter: function (value, row, index) {
                         if (row['LeaveType'] == 0) {
-                            return "天";
+                            return "@localizer["Days"].Value";
                         } else {
-                            return "时间段";
+                            return "@localizer["Period"].Value";
                         }
                     }
                 },
-                { field: 'FromDay', title: '开始日期', sortable: false },
-                { field: 'ToDay', title: '截至日期', sortable: false },
-                { field: 'StartTime', title: '开始时间', sortable: false },
-                { field: 'EndTime', title: '截至时间', sortable: false },
+                { field: 'FromDay', title: '@localizer["From Day"].Value', sortable: false },
+                { field: 'ToDay', title: '@localizer["To Day"].Value', sortable: false },
+                { field: 'StartTime', title: '@localizer["Begin Time"].Value', sortable: false },
+                { field: 'EndTime', title: '@localizer["End Time"].Value', sortable: false },
                 {
-                    field: 'LeaveKind', title: '请假原因', sortable: false,
+                    field: 'LeaveKind', title: '@localizer["Leave Kind"].Value', sortable: false,
                     formatter: function (value, row, index) {
                         if (row['LeaveKind'] == 0) {
-                            return "事假";
+                            return "@localizer["Personal Leave"].Value";
                         } else if (row['LeaveKind'] == 1) {
-                            return "年假";
+                            return "@localizer["Annual Leave"].Value";
                         } else if (row['LeaveKind'] == 2) {
-                            return "病假";
+                            return "@localizer["Sick Leave"].Value";
                         } else {
-                            return "其它";
+                            return "@localizer["Other Leave"].Value";
                         }
                     }
                 },
-                { field: 'Remark', title: '说明', sortable: false }
+                { field: 'Remark', title: '@localizer["Remark"].Value', sortable: false }
             ],
             queryParams: function (params) {
                 var pagination = $('#gridTable').ysTable('getPagination', params);
@@ -180,7 +182,7 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? "编辑" : "添加",
+            title: id > 0 ? "@localizer["Edit"].Value" : "@localizer["Add"].Value",
             content: '@Url.Content("~/OrganizationManage/Leave/LeaveForm")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -192,7 +194,7 @@
     function deleteForm() {
         var selectedRow = $("#gridTable").bootstrapTable("getSelections");
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
+            ys.confirm("@localizer["Confirm To Delete"].Value" + selectedRow.length + "@localizer["Record?"].Value", function () {
                 var ids = ys.getIds(selectedRow);
                 ys.ajax({
                     url: '@Url.Content("~/OrganizationManage/Leave/DeleteFormJson")' + '?ids=' + ids,
@@ -214,7 +216,7 @@
 
     function showDepartmentForm() {
         var url = '@Url.Content("~/OrganizationManage/Department/DepartmentIndex")';
-        createMenuItem(url, "部门管理");
+        createMenuItem(url, "@localizer["Manage Department"].Value");
     }
 
     function exportForm() {

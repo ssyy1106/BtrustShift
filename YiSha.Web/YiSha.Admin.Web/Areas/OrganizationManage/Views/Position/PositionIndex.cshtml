@@ -1,26 +1,26 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <div class="container-div">
     <div class="row">
         <div id="searchDiv" class="col-sm-12 search-collapse">
             <div class="select-list">
                 <ul>
                     <li>
-                        职位名称：<input id="positionName" col="PositionName" type="text" />
+                        @localizer["Position Name"].Value：<input id="positionName" col="PositionName" type="text" />
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div id="toolbar" class="btn-group-sm">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> @localizer["Add"].Value</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> @localizer["Edit"].Value</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> @localizer["Delete"].Value</a>
         </div>
 
         <div class="col-sm-12 select-table table-striped">
@@ -43,10 +43,10 @@
             columns: [
                 { checkbox: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
-                { field: 'PositionName', title: '职位名称', width: "20%", sortable: true },
-                { field: 'PositionSort', title: '显示顺序', width: "15%", sortable: true },
+                { field: 'PositionName', title: '@localizer["Position Name"].Value', width: "20%", sortable: true },
+                { field: 'PositionSort', title: '@localizer["Order"].Value', width: "15%", sortable: true },
                 {
-                    field: 'BaseModifyTime', title: '创建时间', formatter: function (value, row, index) {
+                    field: 'BaseModifyTime', title: '@localizer["Create Time"].Value', formatter: function (value, row, index) {
                         return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
                     }
                 }
@@ -76,7 +76,7 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? "编辑职位" : "添加职位",
+            title: id > 0 ? "@localizer["Edit Position"].Value" : "@localizer["Add Position"].Value",
             content: '@Url.Content("~/OrganizationManage/Position/PositionForm")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -88,7 +88,7 @@
     function deleteForm() {
         var selectedRow = $("#gridTable").bootstrapTable("getSelections");
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
+            ys.confirm("@localizer["Confirm Delete"].Value" + selectedRow.length + "@localizer["Record"].Value？", function () {
                 var ids = ys.getIds(selectedRow);
                 ys.ajax({
                     url: '@Url.Content("~/OrganizationManage/Position/DeleteFormJson")' + '?ids=' + ids,

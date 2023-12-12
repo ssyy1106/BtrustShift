@@ -19,6 +19,8 @@ using YiSha.Util;
 using YiSha.Util.Model;
 using YiSha.Admin.Web.Controllers;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace YiSha.Admin.Web
 {
@@ -68,6 +70,11 @@ namespace YiSha.Admin.Web
 
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(GlobalContext.HostingEnvironment.ContentRootPath + Path.DirectorySeparatorChar + "DataProtection"));
 
+            services.AddMvc().AddViewLocalization();
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  // 注册Encoding
 
             GlobalContext.SystemConfig = Configuration.GetSection("SystemConfig").Get<SystemConfig>();
@@ -94,7 +101,7 @@ namespace YiSha.Admin.Web
 
             string resource = Path.Combine(env.ContentRootPath, "Resource");
             FileHelper.CreateDirectory(resource);
-
+            
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = GlobalContext.SetCacheControl
@@ -105,6 +112,19 @@ namespace YiSha.Admin.Web
                 FileProvider = new PhysicalFileProvider(resource),
                 OnPrepareResponse = GlobalContext.SetCacheControl
             });
+
+            // add localisation support
+            var supportedCultures = new List<CultureInfo> { 
+                new CultureInfo("en-US"),
+                new CultureInfo("zh-CN")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("zh-CN"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
             app.UseSession();
             app.UseRouting();
             app.UseEndpoints(endpoints =>

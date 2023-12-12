@@ -1,22 +1,22 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <div class="wrapper wrapper-content">
     <div class="row animated fadeInRight">
         <div class="col-sm-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>个人信息</h5>
+                    <h5>@localizer["Personal Information"].Value</h5>
                     <div class="ibox-tools">
 
                         <a class="dropdown-toggle" data-toggle="dropdown" href="profile.html#">
                             <i class="fa fa-edit"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="javascript:showChangeUserForm()">修改信息</a></li>
-                            <li><a href="javascript:showChangePasswordForm()">修改密码</a></li>
-                            <li><a href="javascript:showUserAvatarForm()">修改头像</a></li>
+                            <li><a href="javascript:showChangeUserForm()">@localizer["Change Information"].Value</a></li>
+                            <li><a href="javascript:showChangePasswordForm()">@localizer["Change Password"].Value</a></li>
+                            <li><a href="javascript:showUserAvatarForm()">@localizer["Modify Portrait"].Value</a></li>
                         </ul>
 
                     </div>
@@ -24,7 +24,7 @@
                 <div class="contact-box">
                     <div class="col-sm-4">
                         <div>
-                            <img id="portrait" alt="用户头像" style="margin:0 auto;" class="img-circle m-t-xs img-responsive">
+                            <img id="portrait" alt="@localizer["Portrait"].Value" style="margin:0 auto;" class="img-circle m-t-xs img-responsive">
                             <div class="m-t-xs font-bold text-center"><span>@ViewBag.Ip</span></div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                         <p><i class="fa fa-user"></i> <span col="RealName"></span> / <span id="roleName"></span>
                         <p><i class="fa fa-phone"></i> <span col="Mobile"></span></p>
                         <p><i class="fa fa-group"></i> <span id="departmentName"></span> / <span id="positionName"></span></p>
-                        <p><i class="fa fa-transgender"></i> 性别：<span col="Gender"></span></p>
+                        <p><i class="fa fa-transgender"></i> @localizer["Gender"].Value：<span col="Gender"></span></p>
                         <p><i class="fa fa-envelope-o"></i> <span col="Email"></span></p>
                         <p><i class="fa fa-calendar"></i> <span col="Birthday"></span></p>
                     </div>
@@ -143,7 +143,7 @@
 
     function showChangePasswordForm() {
         ys.openDialog({
-            title: "修改密码",
+            title: "@localizer["Change Password"].Value",
             content: '@Url.Content("~/OrganizationManage/User/ChangePassword")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -154,7 +154,7 @@
 
     function showChangeUserForm() {
         ys.openDialog({
-            title: "修改信息",
+            title: "@localizer["Change Information"].Value",
             content: '@Url.Content("~/OrganizationManage/User/ChangeUser")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -165,7 +165,7 @@
 
     function showUserAvatarForm() {
         ys.openDialog({
-            title: "修改头像",
+            title: "@localizer["Change Portrait"].Value",
             content: '@Url.Content("~/OrganizationManage/User/UserPortrait")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];

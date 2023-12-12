@@ -1,51 +1,51 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <div class="wrapper animated fadeInRight">
     <form id="form" class="form-horizontal m">
         <div class="form-group">
-            <label class="col-sm-2 control-label ">登录名称<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">@localizer["UserName"].Value<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="userName" col="UserName" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">登录密码<font class="red"> *</font></label>
+            <label class="col-sm-2 control-label ">@localizer["Password"].Value<font class="red"> *</font></label>
             <div class="col-sm-4">
                 <input id="password" col="Password" type="password" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">姓名</label>
+            <label class="col-sm-2 control-label ">@localizer["RealName"].Value</label>
             <div class="col-sm-4">
                 <input id="realName" col="RealName" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">用户ID</label>
+            <label class="col-sm-2 control-label ">@localizer["User"].Value ID</label>
             <div class="col-sm-4">
                 <input class="form-control" id="btrustId" col="BtrustId" type="text" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">状态</label>
+            <label class="col-sm-2 control-label">@localizer["Status"].Value</label>
             <div class="col-sm-4" id="userStatus" col="UserStatus"></div>
-            <label class="col-sm-2 control-label ">性别</label>
+            <label class="col-sm-2 control-label ">@localizer["Gender"].Value</label>
             <div class="col-sm-4" id="gender" col="Gender"></div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">生日</label>
+            <label class="col-sm-2 control-label ">@localizer["Birthday"].Value</label>
             <div class="col-sm-4">
                 <input id="birthday" col="Birthday" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">部门</label>
+            <label class="col-sm-2 control-label ">@localizer["Department"].Value</label>
             <div class="col-sm-4">
                 <div id="departmentId" col="DepartmentId"></div>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">手机</label>
+            <label class="col-sm-2 control-label ">@localizer["Mobile"].Value</label>
             <div class="col-sm-4">
                 <input id="mobile" col="Mobile" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">职位</label>
+            <label class="col-sm-2 control-label ">@localizer["Position"].Value</label>
             <div class="col-sm-4">
                 <div id="positionId" col="PositionIds"></div>
             </div>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">邮箱</label>
+            <label class="col-sm-2 control-label ">@localizer["Email"].Value</label>
             <div class="col-sm-4">
                 <input id="email" col="Email" type="text" class="form-control" />
             </div>
@@ -71,27 +71,27 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">Hire Date</label>
+            <label class="col-sm-2 control-label ">@localizer["Hire Date"].Value</label>
             <div class="col-sm-4">
                 <input id="hireDate" col="HireDate" type="text" class="form-control" />
             </div>
-            <label class="col-sm-2 control-label ">Terminal Date</label>
+            <label class="col-sm-2 control-label ">@localizer["Terminal Date"].Value</label>
             <div class="col-sm-4">
                 <input id="terminalDate" col="TerminalDate" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">地址</label>
+            <label class="col-sm-2 control-label ">@localizer["Address"].Value</label>
             <div class="col-sm-10">
                 <textarea id="address" col="Address" class="form-control" style="height:60px"></textarea>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">角色</label>
+            <label class="col-sm-2 control-label">@localizer["Role"].Value</label>
             <div class="col-sm-10" id="role" col="RoleIds"></div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label ">备注</label>
+            <label class="col-sm-2 control-label ">@localizer["Remark"].Value</label>
             <div class="col-sm-10">
                 <textarea id="remark" col="Remark" class="form-control" style="height:60px"></textarea>
             </div>

@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
 }
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @section header{
     @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
@@ -15,13 +16,13 @@
         <div class="box box-main">
             <div class="box-header">
                 <div class="box-title">
-                    组织机构
+                    @localizer["Organization"].Value
                 </div>
                 <div class="box-tools pull-right">
-                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="管理部门"><i class="fa fa-edit"></i></a>
-                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="@localizer["ManageDepartment"].Value"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="@localizer["Expand"].Value" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="@localizer["Collapse"].Value"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="@localizer["RefreshDepartment"].Value"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
             <div class="ui-layout-content">
@@ -38,33 +39,33 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        登录名称：<input id="userName" col="UserName" type="text" />
+                        @localizer["LoginUserName"].Value: <input id="userName" col="UserName" type="text" />
                     </li>
                     <li>
-                        手机号码：<input id="mobile" col="Mobile" type="text" />
+                        @localizer["Telephone"].Value: <input id="mobile" col="Mobile" type="text" />
                     </li>
                     <li>
-                        用户状态：<span id="userStatus" col="UserStatus"></span>
+                        @localizer["UserStatus"].Value: <span id="userStatus" col="UserStatus"></span>
                     </li>
                     <li class="select-time">
-                        <label>创建时间： </label>
-                        <input id="startTime" col="StartTime" type="text" class="time-input" placeholder="开始时间" />
+                        <label>@localizer["CreateTime"].Value: </label>
+                        <input id="startTime" col="StartTime" type="text" class="time-input" placeholder="@localizer["BeginTime"].Value" />
                         <span>-</span>
-                        <input id="endTime" col="EndTime" type="text" class="time-input" placeholder="结束时间" />
+                        <input id="endTime" col="EndTime" type="text" class="time-input" placeholder="@localizer["EndTime"].Value" />
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div id="toolbar" class="btn-group-sm">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
-            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
-            <a id="btnImport" class="btn btn-info" onclick="importForm()"><i class="fa fa-upload"></i> 导入</a>
-            <a id="btnExport" class="btn btn-warning" onclick="exportForm()"><i class="fa fa-download"></i> 导出</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> @localizer["Add"].Value</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> @localizer["Edit"].Value</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> @localizer["Delete"].Value</a>
+            <a id="btnImport" class="btn btn-info" onclick="importForm()"><i class="fa fa-upload"></i> @localizer["Import"].Value</a>
+            <a id="btnExport" class="btn btn-warning" onclick="exportForm()"><i class="fa fa-download"></i> @localizer["Export"].Value</a>
         </div>
 
         <div class="col-sm-12 select-table table-striped">
@@ -126,12 +127,12 @@
             columns: [
                 { checkbox: true, visible: true },
                 { field: 'Id', title: 'Id', visible: false },
-                { field: 'UserName', title: '登录名', sortable: true },
-                { field: 'RealName', title: '姓名', sortable: false },
-                { field: 'DepartmentName', title: '部门', sortable: false },
-                { field: 'Mobile', title: '手机', sortable: false },
+                { field: 'UserName', title: '@localizer["UserName"].Value', sortable: true },
+                { field: 'RealName', title: '@localizer["RealName"].Value', sortable: false },
+                { field: 'DepartmentName', title: '@localizer["DepartmentName"].Value', sortable: false },
+                { field: 'Mobile', title: '@localizer["Mobile"].Value', sortable: false },
                 {
-                    field: 'UserStatus', title: '状态', formatter: function (value, row, index) {
+                    field: 'UserStatus', title: '@localizer["UserStatus"].Value', formatter: function (value, row, index) {
                         if (row.UserStatus == "@StatusEnum.Yes.ParseToInt()") {
                             return '<span class="badge badge-primary">' + "@StatusEnum.Yes.GetDescription()" + '</span>';
                         } else {
@@ -140,16 +141,16 @@
                     }
                 },
                 {
-                    field: 'BaseModifyTime', title: '创建时间', formatter: function (value, row, index) {
+                    field: 'BaseModifyTime', title: '@localizer["ModifyTime"].Value', formatter: function (value, row, index) {
                         return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
                     }
                 },
                 {
-                    title: '操作',
+                    title: '@localizer["Action"].Value',
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-warning btn-xs" href="#" onclick="showResetPasswordForm(\'' + row.Id + '\')"><i class="fa fa-key"></i>重置</a>');
+                        actions.push('<a class="btn btn-warning btn-xs" href="#" onclick="showResetPasswordForm(\'' + row.Id + '\')"><i class="fa fa-key"></i>@localizer["Reset"].Value</a>');
                         return actions.join('');
                     }
                 }
@@ -179,7 +180,7 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? "编辑用户" : "添加用户",
+            title: id > 0 ? "@localizer["EditUser"].Value" : "@localizer["AddUser"].Value",
             content: '@Url.Content("~/OrganizationManage/User/UserForm")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -191,7 +192,7 @@
     function deleteForm() {
         var selectedRow = $("#gridTable").bootstrapTable("getSelections");
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
+            ys.confirm("@localizer["ConfirmDelete"].Value" + selectedRow.length + "@localizer["Record"].Value", function () {
                 var ids = ys.getIds(selectedRow);
                 ys.ajax({
                     url: '@Url.Content("~/OrganizationManage/User/DeleteFormJson")' + '?ids=' + ids,
@@ -213,12 +214,12 @@
 
     function showDepartmentForm() {
         var url = '@Url.Content("~/OrganizationManage/Department/DepartmentIndex")';
-        createMenuItem(url, "部门管理");
+        createMenuItem(url, "@localizer["ManageDepartment"].Value");
     }
 
     function showResetPasswordForm(id) {
         ys.openDialog({
-            title: "重置密码",
+            title: "@localizer["ResetPassword"].Value",
             content: '@Url.Content("~/OrganizationManage/User/ResetPassword")' + '?id=' + id,
             height: "220px",
             callback: function (index, layero) {
@@ -236,7 +237,7 @@
 
     function importForm() {
       ys.openDialog({
-            title: "导入用户数据",
+            title: "@localizer["ExportUserData"].Value",
             content: '@Url.Content("~/OrganizationManage/User/UserImport")',
             height: "280px",
             callback: function (index, layero) {

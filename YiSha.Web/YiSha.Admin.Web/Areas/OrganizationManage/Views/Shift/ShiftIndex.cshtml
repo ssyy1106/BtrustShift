@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
 }
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @section header{
     @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
@@ -19,13 +20,13 @@
         <div class="box box-main">
             <div class="box-header">
                 <div class="box-title">
-                    组织机构
+                    @localizer["Organization"].Value
                 </div>
                 <div class="box-tools pull-right">
-                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="管理部门"><i class="fa fa-edit"></i></a>
-                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
-                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="@localizer["Manage Department"].Value"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="@localizer["Expand"].Value" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="@localizer["Collapse"].Value"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="@localizer["Refresh Department"].Value"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
             <div class="ui-layout-content">
@@ -42,21 +43,21 @@
             <div class="select-list">
                 <ul>
                     <li class="select-time">
-                        <label>排班周期： </label>
-                        <input id="periodBegin" col="PeriodBegin" type="text" class="time-input" placeholder="开始时间" />
+                        <label>@localizer["Shift Cycle"].Value： </label>
+                        <input id="periodBegin" col="PeriodBegin" type="text" class="time-input" placeholder="@localizer["Begin Time"].Value" />
                         <span>-</span>
-                        <input id="periodEnd" col="PeriodEnd" type="text" class="time-input" placeholder="结束时间" />
+                        <input id="periodEnd" col="PeriodEnd" type="text" class="time-input" placeholder="@localizer["End Time"].Value" />
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="btn-group-sm" id="toolbar">
-            <a id="btnSubmit" class="btn btn-primary" onclick="removeAllForm()"><i class="fa fa-plus"></i> 提交</a>
-            <a id="btnExport" class="btn btn-primary" onclick="exportForm()"><i class="fa fa-download"></i> 导出</a>
-            <a id="btnExamine" class="btn btn-primary" onclick="examineForm()"><i class="fa fa-eye"></i> 检查</a>
+            <a id="btnSubmit" class="btn btn-primary" onclick="removeAllForm()"><i class="fa fa-plus"></i> @localizer["Submit"].Value</a>
+            <a id="btnExport" class="btn btn-primary" onclick="exportForm()"><i class="fa fa-download"></i> @localizer["Export"].Value</a>
+            <a id="btnExamine" class="btn btn-primary" onclick="examineForm()"><i class="fa fa-eye"></i> @localizer["Examine"].Value</a>
         </div>
 
         <div class="col-sm-12 select-table table-bordered">
@@ -177,7 +178,7 @@
 
     function examineForm() {
         ys.openDialog({
-            title: "数据核查",
+            title: "@localizer["Data Check"].Value",
             content: '@Url.Content("~/OrganizationManage/Shift/ExamineShift")' + '?periodBegin=' + $('#periodBegin').val(),
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -199,32 +200,32 @@
             columns: [
                 [
                     {
-                        title: '基本信息', align: 'center', colspan: 6, cellStyle: cellStyle
+                        title: '@localizer["Information"].Value', align: 'center', colspan: 6, cellStyle: cellStyle
                     },
-                    { title: 'Monday', align: 'center', colspan: 2 },
-                    { title: 'Tuesday', align: 'center', colspan: 2 },
-                    { title: 'Wednesday', align: 'center', colspan: 2 },
-                    { title: 'Thursday', align: 'center', colspan: 2 },
-                    { title: 'Friday', align: 'center', colspan: 2 },
-                    { title: 'Saturday', align: 'center', colspan: 2 },
-                    { title: 'Sunday', align: 'center', colspan: 2 }
+                    { title: '@localizer["Monday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Tuesday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Wednesday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Thursday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Friday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Saturday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Sunday"].Value', align: 'center', colspan: 2 }
                 ],
                 [
                     //{ checkbox: true, visible: true },
-                    { field: 'BtrustId', title: '用户编号', cellStyle: cellStyle },
+                    { field: 'BtrustId', title: '@localizer["User Id"].Value', cellStyle: cellStyle },
                     {
-                        field: 'RealName', title: '用户姓名'
+                        field: 'RealName', title: '@localizer["Real Name"].Value'
                     },
-                    { field: 'DepartmentName', title: '部门' },
+                    { field: 'DepartmentName', title: '@localizer["Department"].Value' },
                     { field: 'TotalHours', title: 'TotalHours' },
                     {
-                        field: 'Remark', title: '备注',
+                        field: 'Remark', title: '@localizer["Remark"].Value',
                         editable: {
                             type: 'text',
                             emptytext: "Remark",
                             validate: function (value) {
                                 if (value.length > 50) {
-                                    return '备注不能超过50个字符';
+                                    return '@localizer["Remark Length"].Value';
                                 }
                                 // if (value.length == 0) {
                                 //     return '备注不能为空';
@@ -247,23 +248,23 @@
                         // }
                     //},
                     {
-                        title: '操作',
+                        title: '@localizer["Action"].Value',
                         align: 'center',
                         formatter: function (value, row, index) {
                             var actions = [];
-                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="AppendShift(\'' + index + '\')"><i class="fa fa-plus"></i>添加班次</a>');
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="AppendShift(\'' + index + '\')"><i class="fa fa-plus"></i>@localizer["Add Shift"].Value</a>');
                             return actions.join('');
                         }
                     },
                     {
-                        field: 'MondayBegin', title: 'begin',
+                        field: 'MondayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                         // formatter: function (value, row, index) {
@@ -276,158 +277,158 @@
                         // }
                     },
                     {
-                        field: 'MondayEnd', title: 'end',
+                        field: 'MondayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'TuesdayBegin', title: 'begin',
+                        field: 'TuesdayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'TuesdayEnd', title: 'end',
+                        field: 'TuesdayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'WednesdayBegin', title: 'begin',
+                        field: 'WednesdayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'WednesdayEnd', title: 'end',
+                        field: 'WednesdayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'ThursdayBegin', title: 'begin',
+                        field: 'ThursdayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'ThursdayEnd', title: 'end',
+                        field: 'ThursdayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'FridayBegin', title: 'begin',
+                        field: 'FridayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'FridayEnd', title: 'end',
+                        field: 'FridayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'SaturdayBegin', title: 'begin',
+                        field: 'SaturdayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'SaturdayEnd', title: 'end',
+                        field: 'SaturdayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'SundayBegin', title: 'begin',
+                        field: 'SundayBegin', title: '@localizer["Begin"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     },
                     {
-                        field: 'SundayEnd', title: 'end',
+                        field: 'SundayEnd', title: '@localizer["End"].Value',
                         editable: {
                             type: 'time',
                             emptytext: "【时间】为空",
                             clear: false,
                             datepicker: { language: 'zh-CN' },//中文支持
                             validate: function (value) {
-                                if (value == '') { return '不能为空!' }
+                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
                             }
                         }
                     }
@@ -458,9 +459,9 @@
         for (let day of dates) {
             let hourBegin = parseInt(row[day + "Begin"].substring(0, 2))
             let hourEnd = parseInt(row[day + "End"].substring(0, 2))
-            if (getMinutes(row['MondayEnd']) < getMinutes(row['MondayBegin'])) {
-                row['UserStatus'] = "wrong"
-            }
+            // if (getMinutes(row[day + "End"]) < getMinutes(row[day + "Begin"])) {
+            //     row['UserStatus'] = "wrong"
+            // }
             hours += hourEnd - hourBegin
         }
         return hours
@@ -490,7 +491,7 @@
             alert('请选择排班周期')
             return
         }
-        ys.confirm("确认要提交数据吗？", function () {
+        ys.confirm("@localizer["Submit the data?"].Value", function () {
             ys.ajax({
                 url: '@Url.Content("~/OrganizationManage/Shift/SubmitFormJson")',
                 type: "post",

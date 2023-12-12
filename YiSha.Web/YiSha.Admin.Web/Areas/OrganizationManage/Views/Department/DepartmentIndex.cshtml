@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Index.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @section header{
     @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
@@ -14,20 +14,20 @@
             <div class="select-list">
                 <ul>
                     <li>
-                        部门名称：<input id="departmentName" col="DepartmentName" type="text" />
+                        @localizer["DepartmentName"].Value: <input id="departmentName" col="DepartmentName" type="text" />
                     </li>
                     <li>
-                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchTreeGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchTreeGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
-            <a id="btnEdit" class="btn btn-primary" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
-            <a id="btnDelete" class="btn btn-danger" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
-            <a id="btnExpandAll" class="btn btn-info"><i class="fa fa-exchange"></i> 展开/折叠</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> @localizer["Add"].Value</a>
+            <a id="btnEdit" class="btn btn-primary" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> @localizer["Edit"].Value</a>
+            <a id="btnDelete" class="btn btn-danger" onclick="deleteForm()"><i class="fa fa-remove"></i> @localizer["Delete"].Value</a>
+            <a id="btnExpandAll" class="btn btn-info"><i class="fa fa-exchange"></i> @localizer["ExpandAll"].Value</a>
         </div>
         <div class="col-sm-12 select-table table-striped">
             <table id="gridTable" data-mobile-responsive="true"></table>
@@ -54,11 +54,11 @@
             modalName: "部门",
             columns: [
                 { field: 'selectItem', radio: true },
-                { field: 'DepartmentName', title: '部门名称', width: '20%' },
-                { field: 'DepartmentSort', title: '显示顺序', width: '10%', align: "left" },
-                { field: 'PrincipalName', title: '负责人', width: '10%', align: "left" },
+                { field: 'DepartmentName', title: '@localizer["DepartmentName"].Value', width: '20%' },
+                { field: 'DepartmentSort', title: '@localizer["ShowingOrder"].Value', width: '10%', align: "left" },
+                { field: 'PrincipalName', title: '@localizer["PrincipalName"].Value', width: '10%', align: "left" },
                 {
-                    field: 'BaseModifyTime', title: '创建时间', width: '60%', align: "left",
+                    field: 'BaseModifyTime', title: '@localizer["CreateTime"].Value', width: '60%', align: "left",
                     formatter: function (value, row, index) {
                         return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
                     }
@@ -93,7 +93,7 @@
             }
         }
         ys.openDialog({
-            title: id > 0 ? "编辑部门" : "添加部门",
+            title: id > 0 ? "@localizer["EditDepartment"].Value" : "@localizer["AddDepartment"].Value",
             content: '@Url.Content("~/OrganizationManage/Department/DepartmentForm")' + '?id=' + id,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -105,7 +105,7 @@
     function deleteForm() {
         var selectedRow = $("#gridTable").bootstrapTreeTable("getSelections");
         if (ys.checkRowDelete(selectedRow)) {
-            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
+            ys.confirm("@localizer["ConfirmDelete"].Value" + selectedRow.length + "@localizer["Record"].Value", function () {
                 var ids = ys.getIds(selectedRow);
                 ys.ajax({
                     url: '@Url.Content("~/OrganizationManage/Department/DeleteFormJson")' + '?ids=' + ids,

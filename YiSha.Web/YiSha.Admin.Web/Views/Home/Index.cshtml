@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
     ViewBag.Title = "Btrust后台管理系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,57 +41,57 @@
                     List<MenuEntity> menuList = ViewBag.MenuList;
                     foreach (MenuEntity menu in menuList.Where(p => p.ParentId == 0).OrderBy(p => p.MenuSort))
                     {
-                        <li data-type="menu">
-                            @{
+                            <li data-type="menu">
+                                @{
                                 if (HttpHelper.IsUrl(menu.MenuUrl))
                                 {
-                                    <a class="menuItem" href="@menu.MenuUrl">
-                                        <i class="@menu.MenuIcon"></i>
-                                        <span class="nav-label">@menu.MenuName</span>
-                                    </a>
+                                            <a class="menuItem" href="@menu.MenuUrl">
+                                                <i class="@menu.MenuIcon"></i>
+                                                <span class="nav-label">@menu.MenuName</span>
+                                            </a>
                                 }
                                 else
                                 {
-                                    <a href="#">
-                                        <i class="@menu.MenuIcon"></i>
-                                        <span class="nav-label">@menu.MenuName</span>
-                                        <span class="fa arrow"></span>
-                                    </a>
+                                            <a href="#">
+                                                <i class="@menu.MenuIcon"></i>
+                                                <span class="nav-label">@menu.MenuName</span>
+                                                <span class="fa arrow"></span>
+                                            </a>
                                 }
-                            }
-                            <ul class="nav nav-second-level collapse" data-type="menu">
-                                @foreach (MenuEntity secondMenu in menuList.Where(p => p.ParentId == menu.Id).OrderBy(p => p.MenuSort))
+                                }
+                                <ul class="nav nav-second-level collapse" data-type="menu">
+                                    @foreach (MenuEntity secondMenu in menuList.Where(p => p.ParentId == menu.Id).OrderBy(p => p.MenuSort))
                                 {
-                                    <li data-type="menu">
-                                        @{
+                                        <li data-type="menu">
+                                            @{
                                             if (menuList.Where(p => p.ParentId == secondMenu.Id && p.MenuType != (int)MenuTypeEnum.Button).Count() == 0)
                                             {
                                                 if (HttpHelper.IsUrl(secondMenu.MenuUrl))
                                                 {
-                                                    <a class="menuItem" href='@secondMenu.MenuUrl'>@secondMenu.MenuName</a>
+                                                            <a class="menuItem" href='@secondMenu.MenuUrl'>@secondMenu.MenuName</a>
                                                 }
                                                 else
                                                 {
-                                                    <a class="menuItem" href="#" data-url='@Url.Content("~/" + secondMenu.MenuUrl)'>@secondMenu.MenuName</a>
+                                                            <a class="menuItem" href="#" data-url='@Url.Content("~/" + secondMenu.MenuUrl)'>@secondMenu.MenuName</a>
                                                 }
                                             }
                                             else
                                             {
-                                                <a href="#">@secondMenu.MenuName<span class="fa arrow"></span></a>
-                                                <ul class="nav nav-third-level" data-type="menu">
-                                                    @foreach (MenuEntity thirdMenu in menuList.Where(p => p.ParentId == secondMenu.Id).OrderBy(p => p.MenuSort))
+                                                        <a href="#">@secondMenu.MenuName<span class="fa arrow"></span></a>
+                                                        <ul class="nav nav-third-level" data-type="menu">
+                                                            @foreach (MenuEntity thirdMenu in menuList.Where(p => p.ParentId == secondMenu.Id).OrderBy(p => p.MenuSort))
                                                     {
-                                                        <li data-type="menu">
-                                                            <a class="menuItem" href="#" data-url='@Url.Content("~/" + thirdMenu.MenuUrl)'>@thirdMenu.MenuName</a>
-                                                        </li>
+                                                                <li data-type="menu">
+                                                                    <a class="menuItem" href="#" data-url='@Url.Content("~/" + thirdMenu.MenuUrl)'>@thirdMenu.MenuName</a>
+                                                                </li>
                                                     }
-                                                </ul>
+                                                        </ul>
                                             }
-                                        }
-                                    </li>
+                                            }
+                                        </li>
                                 }
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
                     }
                 }
             </ul>
@@ -105,6 +106,27 @@
                     <i class="fa fa-bars"></i>
                 </a>
                 <ul class="nav navbar-top-links navbar-right welcome-message">
+                    
+                    <li class="dropdown user-menu">
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
+                            <img src="@portrait" class="user-image">
+                            <span class="hidden-xs">@localizer["Language"].Value</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="mt5">
+                                <a onclick="changeLanguage('zh-CH')">
+                                    <i class="fa fa-user"></i> 中文
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="changeLanguage('en-US')">
+                                    <i class="fa fa-key"></i> English
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     <li><a id="fullScreen"><i class="fa fa-arrows-alt"></i>全屏</a></li>
                     <li class="dropdown user-menu">
                         <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
@@ -179,6 +201,11 @@
         var skinName = "skin-blue";
         $("body").addClass(sideTheme);
         $("body").addClass(skinName);
+    }
+
+    function changeLanguage(language) {
+        document.cookie = `.AspNetCore.Culture=c=${language}|uic=${language}`;
+        location.reload()
     }
 
     function showChangePasswordForm() {

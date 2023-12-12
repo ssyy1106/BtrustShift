@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
 @section header{
     @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/cropbox/1.0/cropbox.min.css"))
@@ -15,13 +15,13 @@
     </div>
     <div class="action">
         <div class="new-contentarea tc">
-            <a href="javascript:void(0)" class="upload-img"> <label for="avatar">上传图像</label> </a>
+            <a href="javascript:void(0)" class="upload-img"> <label for="avatar">@localizer["Upload Picture"].Value</label> </a>
             <input type="file" id="portrait" accept="image/*" />
         </div>
-        <input type="button" id="btnCrop" class="Btnsty_peyton" value="裁切" />
+        <input type="button" id="btnCrop" class="Btnsty_peyton" value="@localizer["Cut"].Value" />
         <input type="button" id="btnZoomIn" class="Btnsty_peyton" value="+" />
         <input type="button" id="btnZoomOut" class="Btnsty_peyton" value="-" />
-        <input type="button" id="btnSave" class="Btnsty_peyton" value="提交" />
+        <input type="button" id="btnSave" class="Btnsty_peyton" value="@localizer["Submit"].Value" />
     </div>
     <div class="cropped"></div>
 </div>
@@ -52,7 +52,7 @@
                 options.imgSrc = e.target.result;
                 //根据MIME判断上传的文件是不是图片类型
                 if ((options.imgSrc).indexOf("image/") == -1) {
-                    ys.msgError("文件格式错误，请上传图片类型,如：JPG,JEPG，PNG后缀的文件。");
+                    ys.msgError("@localizer["File Error"].Value");
                 } else {
                     cropper = $('.imageBox').cropbox(options);
                 }
@@ -125,7 +125,7 @@
 
     function checkImageFileName() {
         if (ys.isNullOrEmpty(imgFileName)) {
-            ys.msgError("请先上传图片");
+            ys.msgError("@localizer["Upload Picture Firstly"].Value");
             return false;
         }
         else {

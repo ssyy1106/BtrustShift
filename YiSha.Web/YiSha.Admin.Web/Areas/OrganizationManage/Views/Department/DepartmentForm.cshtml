@@ -1,35 +1,35 @@
 ﻿@{
     Layout = "~/Views/Shared/_FormWhite.cshtml";
 }
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <div class="wrapper animated fadeInRight">
     <form id="form" class="form-horizontal m">
         <div class="form-group">
-            <label class="col-sm-3 control-label ">上级部门</label>
+            <label class="col-sm-3 control-label ">@localizer["ParentDepartment"].Value</label>
             <div class="col-sm-8">
                 <div id="parentId" col="ParentId"></div>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">部门名称<font class="red"> *</font></label>
+            <label class="col-sm-3 control-label ">@localizer["DepartmentName"].Value<font class="red"> *</font></label>
             <div class="col-sm-8">
                 <input id="departmentName" col="DepartmentName" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">负责人</label>
+            <label class="col-sm-3 control-label ">@localizer["PrincipalName"].Value</label>
             <div class="col-sm-8">
                 <div id="principalId" col="PrincipalId"></div>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">电话号码</label>
+            <label class="col-sm-3 control-label ">@localizer["Mobile"].Value</label>
             <div class="col-sm-8">
                 <input id="telephone" col="Telephone" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">传真</label>
+            <label class="col-sm-3 control-label ">@localizer["Fax"].Value</label>
             <div class="col-sm-8">
                 <input id="fax" col="Fax" type="text" class="form-control" />
             </div>
@@ -41,13 +41,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">显示顺序</label>
+            <label class="col-sm-3 control-label ">@localizer["ShowingOrder"].Value</label>
             <div class="col-sm-8">
                 <input id="departmentSort" col="DepartmentSort" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label ">备注</label>
+            <label class="col-sm-3 control-label ">@localizer["Remark"].Value</label>
             <div class="col-sm-8">
                 <textarea id="remark" col="Remark" class="form-control"></textarea>
             </div>

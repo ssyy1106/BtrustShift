@@ -17,6 +17,7 @@ using YiSha.Util;
 using YiSha.Entity.OrganizationManage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace YiSha.Admin.Web.Controllers
 {
@@ -26,7 +27,11 @@ namespace YiSha.Admin.Web.Controllers
         private UserBLL userBLL = new UserBLL();
         private LogLoginBLL logLoginBLL = new LogLoginBLL();
         private MenuAuthorizeBLL menuAuthorizeBLL = new MenuAuthorizeBLL();
-
+        private readonly IStringLocalizer<HomeController> localizer;
+        public HomeController(IStringLocalizer<HomeController> localizer)
+        {
+            this.localizer = localizer;
+        }
         #region 视图功能
         [HttpGet]
         [AuthorizeFilter]
@@ -51,6 +56,10 @@ namespace YiSha.Admin.Web.Controllers
         }
 
         [HttpGet]
+        //public ActionResult<string> Welcome()
+        //{
+        //    return localizer.GetString("Hello").Value;
+        //}
         public IActionResult Welcome()
         {
             return View();
