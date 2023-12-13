@@ -9,15 +9,15 @@ namespace YiSha.Enum.OrganizationManage
 {
     public enum UserTypeEnum
     {
-        [Description("学生")]
+        [Description("学生20小时")]
         A20 = 0,
-        [Description("30小时")]
+        [Description("A30小时")]
         A30 = 1,
-        [Description("36小时")]
+        [Description("A36小时")]
         A36 = 2,
-        [Description("40小时")]
+        [Description("A40小时")]
         A40 = 3,
-        [Description("4小时")]
+        [Description("A44小时")]
         A44 = 4,
         [Description("B")]
         B = 5,

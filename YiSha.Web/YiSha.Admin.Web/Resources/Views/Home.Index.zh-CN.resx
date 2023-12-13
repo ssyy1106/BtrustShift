@@ -117,7 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Action" xml:space="preserve">
+    <value>页签操作</value>
+  </data>
+  <data name="Change Pwd" xml:space="preserve">
+    <value>修改密码</value>
+  </data>
+  <data name="Change Theme" xml:space="preserve">
+    <value>切换主题</value>
+  </data>
+  <data name="Close All Pages" xml:space="preserve">
+    <value>全部关闭</value>
+  </data>
+  <data name="Close Other Pages" xml:space="preserve">
+    <value>关闭其他</value>
+  </data>
+  <data name="Close This Page" xml:space="preserve">
+    <value>关闭当前</value>
+  </data>
+  <data name="Full Screen" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+  <data name="Home Page" xml:space="preserve">
+    <value>首页</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>语言</value>
+  </data>
+  <data name="Log Out" xml:space="preserve">
+    <value>退出登录</value>
+  </data>
+  <data name="Personal Center" xml:space="preserve">
+    <value>个人中心</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
   </data>
 </root>

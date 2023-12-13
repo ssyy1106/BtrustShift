@@ -1,0 +1,295 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+    <link href="@Url.Content("~/lib/bootstrap.table/1.12.0/extensions/editable/bootstrap-editable.css")" rel="stylesheet" type="text/css">
+    <script src='@Url.Content("~/lib/bootstrap.table/1.12.0/extensions/editable/bootstrap-editable.min.js")' type="text/javascript"></script>
+    <script src='@Url.Content("~/lib/bootstrap.table/1.12.0/extensions/editable/bootstrap-table-editable.js")' type="text/javascript"></script>
+    <script src='@Url.Content("~/lib/bootstrap.table/1.12.0/extensions/editable/bootstrap-datepicker.zh-CN.js")' type="text/javascript"></script>
+}
+
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    @localizer["Organization"].Value
+                </div>
+                <div class="box-tools pull-right">
+                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="@localizer["Manage Department"].Value"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="@localizer["Expand"].Value" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="@localizer["Collapse"].Value"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="@localizer["Refresh Department"].Value"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="departmentTree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <input type="hidden" id="departmentId" col="DepartmentId">
+            <div class="select-list">
+                <ul>
+                    <li class="select-time">
+                        <label>@localizer["Shift Cycle"].Value： </label>
+                        <input id="periodBegin" col="PeriodBegin" type="text" class="time-input" placeholder="@localizer["Begin Time"].Value" />
+                        <span>-</span>
+                        <input id="periodEnd" col="PeriodEnd" type="text" class="time-input" placeholder="@localizer["End Time"].Value" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;@localizer["Search"].Value</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-sm-12 select-table table-bordered">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        laydate.render({ elem: '#periodBegin', format: 'yyyy-MM-dd', done: adjustBeginDate });
+        laydate.render({ elem: '#periodEnd', format: 'yyyy-MM-dd', done: adjustEndDate });
+
+        let whichDay = new Date().getUTCDay()
+        if (whichDay == 0) {
+            whichDay = 7
+        }
+        let beginDate = new Date()
+        beginDate.setDate(beginDate.getDate() - whichDay + 1)
+        let endD = new Date(beginDate)
+        endD.setDate(endD.getDate() + 6)
+        $('#periodBegin').val(beginDate.toISOString().slice(0, 10))
+        $('#periodEnd').val(endD.toISOString().slice(0, 10))
+        initGrid();
+        initTree();
+        $('body').layout({ west__size: 185 });
+
+        $('#btnExpand').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("departmentTree");
+            tree.expandAll(true);
+            $(this).hide();
+            $('#btnCollapse').show();
+        });
+
+        $('#btnCollapse').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("departmentTree");
+            tree.expandAll(false);
+            $(this).hide();
+            $('#btnExpand').show();
+        });
+
+        $('#btnRefresh').click(function () {
+            initTree();
+        });
+    });
+
+    function initTree() {
+        try {
+            $('#departmentTree').ysTree({
+                url: '@Url.Content("~/OrganizationManage/Department/GetDepartmentTreeListJson")',
+                async: true,
+                expandLevel: 2,
+                maxHeight: "700px",
+                callback: {
+                    onClick: function (event, treeId, treeNode) {
+                        $("#departmentId").val(treeNode.id);
+                        searchGrid();
+                    }
+                }
+            });
+        } catch (err) {
+            alert(err)
+        }
+
+    }
+
+    function adjustBeginDate(value, date, endDate) {
+        let whichDay = new Date(value).getUTCDay()
+        let beginDate = new Date(value)
+        beginDate.setDate(beginDate.getDate() - whichDay + 1)
+        let endD = new Date(beginDate)
+        endD.setDate(endD.getDate() + 6)
+        $('#periodBegin').val(beginDate.toISOString().slice(0, 10))
+        $('#periodEnd').val(endD.toISOString().slice(0, 10))
+    }
+
+    function adjustEndDate(value, date, endDate) {
+        let whichDay = new Date(value).getUTCDay()
+        let endD = new Date(value)
+        endD.setDate(endD.getDate() + 7 - whichDay)
+        let beginDate = new Date(endD)
+        beginDate.setDate(beginDate.getDate() - 6)
+        $('#periodBegin').val(beginDate.toISOString().slice(0, 10))
+        $('#periodEnd').val(endD.toISOString().slice(0, 10))
+    }
+
+    function cellStyle(value, row, index, field) {
+        return {
+            classes: 'bg-yellow',
+            css: {
+                color: 'red'
+            }
+        }
+    }
+    function rowStyle(row, index) {
+        return {
+            classes: 'text-nowrap another-class',
+            css: { "color": "blue", "font-size": "10px" }
+        };
+    }
+
+    function getMinutes(timeStr) {
+        if (timeStr.length !== 5) {
+            return 0
+        }
+        return parseInt(timeStr.substring(0, 2)) * 60 + parseInt(timeStr.substring(3))
+    }
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/OrganizationManage/Punch/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortOrder: 'asc',
+            sortable: true,
+            sortStable: true,
+            sortName: 'DepartmentName',
+            //rowStyle: rowStyle,
+            columns: [
+                [
+                    {
+                        title: '@localizer["Information"].Value', align: 'center', colspan: 3, cellStyle: cellStyle
+                    },
+                    { title: '@localizer["Monday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Tuesday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Wednesday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Thursday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Friday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Saturday"].Value', align: 'center', colspan: 4 },
+                    { title: '@localizer["Sunday"].Value', align: 'center', colspan: 4 }
+                ],
+                [
+                    //{ checkbox: true, visible: true },
+                    { field: 'BtrustId', title: '@localizer["User Id"].Value', cellStyle: cellStyle },
+                    {
+                        field: 'RealName', title: '@localizer["Real Name"].Value'
+                    },
+                    { field: 'DepartmentName', title: '@localizer["Department"].Value' },
+                    
+                    {
+                        field: 'MondayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'MondayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'MondayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'MondayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'TuesdayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'TuesdayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'TuesdayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'TuesdayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'WednesdayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'WednesdayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'WednesdayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'WednesdayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'ThursdayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'ThursdayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'ThursdayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'ThursdayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'FridayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'FridayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'FridayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'FridayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'SaturdayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'SaturdayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'SaturdayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'SaturdayEndPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'SundayBegin', title: '@localizer["Begin"].Value'
+                    },
+                    {
+                        field: 'SundayBeginPunch', title: '@localizer["Punch"].Value'
+                    },
+                    {
+                        field: 'SundayEnd', title: '@localizer["End"].Value'
+                    },
+                    {
+                        field: 'SundayEndPunch', title: '@localizer["Punch"].Value'
+                    }
+                ]
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                queryString.pageIndex = 1;
+                queryString.pageSize = 10000;
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+</script>
