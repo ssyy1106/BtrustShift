@@ -75,9 +75,9 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
                 {
                     res = res.Union(list).ToList();
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    LogHelper.Error(ex);
                 }
             }
             res = res.OrderBy(o => o.DepartmentName).ToList();

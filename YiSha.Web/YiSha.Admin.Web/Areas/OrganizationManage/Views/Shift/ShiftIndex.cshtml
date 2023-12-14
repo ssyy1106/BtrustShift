@@ -65,6 +65,9 @@
         </div>
     </div>
 </div>
+@{
+    string[] days = new string[7] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+}
 
 <script type="text/javascript">
     $(function () {
@@ -256,182 +259,33 @@
                             return actions.join('');
                         }
                     },
-                    {
-                        field: 'MondayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
+                @foreach (var day in days)
+                {
+                    <text>{
+                            field: '@(day)Begin', title: '@localizer["Begin"].Value',
+                            editable: {
+                                type: 'time',
+                                emptytext: "【时间】为空",
+                                clear: false,
+                                datepicker: { language: 'zh-CN' },//中文支持
+                                validate: function (value) {
+                                    if (value == '') { return '@localizer["Cannot be empty"].Value' }
+                                }
                             }
-                        }
-                        // formatter: function (value, row, index) {
-                        //     if (getMinutes(row['MondayEnd']) < getMinutes(row['MondayBegin'])) {
-                        //         alert('not ok')
-                        //         return "wrong"
-                        //     } else {
-                        //         return "right"
-                        //     }
-                        // }
-                    },
-                    {
-                        field: 'MondayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
+                        }, {
+                            field: '@(day)End', title: '@localizer["End"].Value',
+                            editable: {
+                                type: 'time',
+                                emptytext: "【时间】为空",
+                                clear: false,
+                                datepicker: { language: 'zh-CN' },//中文支持
+                                validate: function (value) {
+                                    if (value == '') { return '@localizer["Cannot be empty"].Value' }
+                                }
                             }
-                        }
-                    },
-                    {
-                        field: 'TuesdayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'TuesdayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'WednesdayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'WednesdayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'ThursdayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'ThursdayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'FridayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'FridayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'SaturdayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'SaturdayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'SundayBegin', title: '@localizer["Begin"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    },
-                    {
-                        field: 'SundayEnd', title: '@localizer["End"].Value',
-                        editable: {
-                            type: 'time',
-                            emptytext: "【时间】为空",
-                            clear: false,
-                            datepicker: { language: 'zh-CN' },//中文支持
-                            validate: function (value) {
-                                if (value == '') { return '@localizer["Cannot be empty"].Value' }
-                            }
-                        }
-                    }
+                        }, </text>
+                }
+                    
                 ]
 
             ],

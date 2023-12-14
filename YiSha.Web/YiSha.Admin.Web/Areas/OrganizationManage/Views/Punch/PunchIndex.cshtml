@@ -20,7 +20,7 @@
         <div class="box box-main">
             <div class="box-header">
                 <div class="box-title">
-                    @localizer["Organization"].Value
+                    @localizer["Btrust"].Value
                 </div>
                 <div class="box-tools pull-right">
                     <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="@localizer["Manage Department"].Value"><i class="fa fa-edit"></i></a>
@@ -60,6 +60,9 @@
         </div>
     </div>
 </div>
+@{
+    string[] days = new string[7] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+}
 
 <script type="text/javascript">
     $(function () {
@@ -191,90 +194,49 @@
                     },
                     { field: 'DepartmentName', title: '@localizer["Department"].Value' },
                     
-                    {
-                        field: 'MondayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'MondayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'MondayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'MondayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'TuesdayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'TuesdayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'TuesdayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'TuesdayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'WednesdayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'WednesdayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'WednesdayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'WednesdayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'ThursdayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'ThursdayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'ThursdayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'ThursdayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'FridayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'FridayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'FridayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'FridayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'SaturdayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'SaturdayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'SaturdayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'SaturdayEndPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'SundayBegin', title: '@localizer["Begin"].Value'
-                    },
-                    {
-                        field: 'SundayBeginPunch', title: '@localizer["Punch"].Value'
-                    },
-                    {
-                        field: 'SundayEnd', title: '@localizer["End"].Value'
-                    },
-                    {
-                        field: 'SundayEndPunch', title: '@localizer["Punch"].Value'
-                    }
+                @foreach (var day in days)
+                {
+                    <text>{
+                            field: '@(day)Begin', title: '@localizer["Begin"].Value',
+                            formatter: function (value, row, index) {
+                                if (row["@(day)BeginPunch"] > row["@(day)Begin"]) {
+                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                } else {
+                                    return value;
+                                }
+                            }
+                        },
+                        {
+                            field: '@(day)BeginPunch', title: '@localizer["Punch"].Value',
+                            formatter: function (value, row, index) {
+                                if (row["@(day)BeginPunch"] > row["@(day)Begin"]) {
+                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                } else {
+                                    return value;
+                                }
+                            }
+                        },
+                        {
+                            field: '@(day)End', title: '@localizer["End"].Value',
+                            formatter: function (value, row, index) {
+                                if (row["@(day)End"] > row["@(day)EndPunch"]) {
+                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                } else {
+                                    return value;
+                                }
+                            }
+                        },
+                        {
+                            field: '@(day)EndPunch', title: '@localizer["Punch"].Value',
+                            formatter: function (value, row, index) {
+                                if (row["@(day)End"] > row["@(day)EndPunch"]) {
+                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                } else {
+                                    return value;
+                                }
+                            }
+                        }, </text>
+                }
                 ]
 
             ],
