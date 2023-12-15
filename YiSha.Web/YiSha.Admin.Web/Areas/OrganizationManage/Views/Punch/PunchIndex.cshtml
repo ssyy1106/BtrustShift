@@ -178,13 +178,13 @@
                     {
                         title: '@localizer["Information"].Value', align: 'center', colspan: 3, cellStyle: cellStyle
                     },
-                    { title: '@localizer["Monday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Tuesday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Wednesday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Thursday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Friday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Saturday"].Value', align: 'center', colspan: 4 },
-                    { title: '@localizer["Sunday"].Value', align: 'center', colspan: 4 }
+                    { title: '@localizer["Monday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Tuesday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Wednesday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Thursday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Friday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Saturday"].Value', align: 'center', colspan: 2 },
+                    { title: '@localizer["Sunday"].Value', align: 'center', colspan: 2 }
                 ],
                 [
                     //{ checkbox: true, visible: true },
@@ -200,19 +200,9 @@
                             field: '@(day)Begin', title: '@localizer["Begin"].Value',
                             formatter: function (value, row, index) {
                                 if (row["@(day)BeginPunch"] > row["@(day)Begin"]) {
-                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                    return value + '<br>' + '<a class="badge badge-danger">' + row["@(day)BeginPunch"] + '</a>';
                                 } else {
-                                    return value;
-                                }
-                            }
-                        },
-                        {
-                            field: '@(day)BeginPunch', title: '@localizer["Punch"].Value',
-                            formatter: function (value, row, index) {
-                                if (row["@(day)BeginPunch"] > row["@(day)Begin"]) {
-                                    return '<a class="badge badge-primary">' + value + '</a>';
-                                } else {
-                                    return value;
+                                    return value + '<br>' + row["@(day)BeginPunch"];
                                 }
                             }
                         },
@@ -220,22 +210,13 @@
                             field: '@(day)End', title: '@localizer["End"].Value',
                             formatter: function (value, row, index) {
                                 if (row["@(day)End"] > row["@(day)EndPunch"]) {
-                                    return '<a class="badge badge-primary">' + value + '</a>';
+                                    return value + '<br>' + '<a class="badge badge-danger">' + row["@(day)EndPunch"] + '</a>';
                                 } else {
-                                    return value;
+                                    return value + '<br>' + row["@(day)EndPunch"];
                                 }
                             }
                         },
-                        {
-                            field: '@(day)EndPunch', title: '@localizer["Punch"].Value',
-                            formatter: function (value, row, index) {
-                                if (row["@(day)End"] > row["@(day)EndPunch"]) {
-                                    return '<a class="badge badge-primary">' + value + '</a>';
-                                } else {
-                                    return value;
-                                }
-                            }
-                        }, </text>
+                    </text>
                 }
                 ]
 
