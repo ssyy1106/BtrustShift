@@ -30,6 +30,11 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
         {
             return View();
         }
+        [AuthorizeFilter("organization:punch:add, organization:punch:edit")]
+        public IActionResult PunchForm()
+        {
+            return View();
+        }
 
         #endregion
 
@@ -41,6 +46,17 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             TData<List<PunchAllEntity>> obj = new TData<List<PunchAllEntity>>();
             obj.Tag = 1;
             obj.Data = await GetListJson(param);
+            return Json(obj);
+        }
+
+        [HttpGet]
+        [AuthorizeFilter("organization:punch:view")]
+        public async Task<IActionResult> GetFormJson(long id, long userId, string punchDate)
+        {
+            TData<PunchProblemEntity> obj = new TData<PunchProblemEntity>();
+            obj.Tag = 1;
+            //obj.Data = await GetListJson(param);
+            obj.Data = await punchService.GetAllInfo(id, userId, punchDate);
             return Json(obj);
         }
         #endregion

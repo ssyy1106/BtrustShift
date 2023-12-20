@@ -31,6 +31,8 @@ namespace YiSha.Entity.OrganizationManage
 
     public class PunchAllEntity
     {
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? UserId { get; set; }
         public string BtrustId { get; set; }
         public string RealName { get; set; }
         public string DepartmentName { get; set; }
@@ -63,5 +65,64 @@ namespace YiSha.Entity.OrganizationManage
         public string SaturdayEndPunch { get; set; }
         public string SundayBeginPunch { get; set; }
         public string SundayEndPunch { get; set; }
+        public int MondayBeginPunchStatus { get; set; }
+        public int MondayEndPunchStatus { get; set; }
+        public int TuesdayBeginPunchStatus { get; set; }
+        public int TuesdayEndPunchStatus { get; set; }
+        public int WednesdayBeginPunchStatus { get; set; }
+        public int WednesdayEndPunchStatus { get; set; }
+        public int ThursdayBeginPunchStatus { get; set; }
+        public int ThursdayEndPunchStatus { get; set; }
+        public int FridayBeginPunchStatus { get; set; }
+        public int FridayEndPunchStatus { get; set; }
+        public int SaturdayBeginPunchStatus { get; set; }
+        public int SaturdayEndPunchStatus { get; set; }
+        public int SundayBeginPunchStatus { get; set; }
+        public int SundayEndPunchStatus { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? MondayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? TuesdayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? WednesdayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? ThursdayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? FridayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? SaturdayPunchProblemId { get; set; }
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? SundayPunchProblemId { get; set; }
+    }
+
+    public class PunchProblemEntity : BaseEntity
+    {
+        [JsonConverter(typeof(StringJsonConverter))]
+        public long? UserId { get; set; }
+        public string BtrustId { get; set; }
+        public string PunchDate { get; set; }
+        public int DailyReason { get; set; }
+        public string DailyMessage { get; set; }
+        public int BeginReason { get; set; }
+        public string BeginMessage { get; set; }
+        public int EndReason { get; set; }
+        public string EndMessage { get; set; }
+        public int Status { get; set; }
+        public string Remark { get; set; }
+        //[NotMapped]
+        //public string DepartmentName { get; set; }
+
+        [NotMapped]
+        public string RealName { get; set; }
+        [NotMapped]
+        public string BeginTime { get; set; }
+        [NotMapped]
+        public string EndTime { get; set; }
+        [NotMapped]
+        public string FirstPunchTime { get; set; }
+        [NotMapped]
+        public string LastPunchTime { get; set; }
+        [NotMapped]
+        public List<string> Punches { get; set; }
     }
 }

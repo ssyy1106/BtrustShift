@@ -1,0 +1,204 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Real Name"].Value</label>
+            <div class="col-sm-4">
+                <input id="realName" col="RealName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Btrust ID"].Value</label>
+            <div class="col-sm-4">
+                <input id="btrustId" col="BtrustId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Shift Begin Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="beginTime" col="BeginTime" type="text" class="time-input" placeholder="@localizer["Begin Time"].Value" disabled="disabled" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Shift End Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="endTime" col="EndTime" type="text" class="time-input" placeholder="@localizer["End Time"].Value" disabled="disabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["First Punch Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="firstPunchTime" col="FirstPunchTime" type="text" class="time-input" placeholder="@localizer["First Punch Time"].Value" disabled="disabled" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Last Punch Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="lastPunchTime" col="LastPunchTime" type="text" class="time-input" placeholder="@localizer["Last Punch Time"].Value" disabled="disabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">@localizer["Status"].Value</label>
+            <div class="col-sm-4" id="userStatus" col="UserStatus"></div>
+            <label class="col-sm-2 control-label ">@localizer["Gender"].Value</label>
+            <div class="col-sm-4" id="gender" col="Gender"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Punch Date"].Value</label>
+            <div class="col-sm-4">
+                <input id="punchDate" col="PunchDate" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Department"].Value</label>
+            <div class="col-sm-4">
+                <div id="departmentId" col="DepartmentId"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Mobile"].Value</label>
+            <div class="col-sm-4">
+                <input id="mobile" col="Mobile" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Position"].Value</label>
+            <div class="col-sm-4">
+                <div id="positionId" col="PositionIds"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Begin Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="beginReason" col="BeginReason"></div>
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["End Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="endReason" col="EndReason"></div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Daily Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="dailyReason" col="DailyReason"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Punches"].Value</label>
+            <div class="col-sm-10">
+                <textarea id="punches" col="Punches" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">@localizer["Role"].Value</label>
+            <div class="col-sm-10" id="role" col="RoleIds"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Remark"].Value</label>
+            <div class="col-sm-10">
+                <textarea id="remark" col="Remark" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var userId = ys.request("userId");
+    var punchDate = ys.request("punchDate");
+    var beginTime = ys.request("beginTime");
+    var endTime = ys.request("endTime");
+    var beginPunchTime = ys.request("beginPunchTime");
+    var endPunchTime = ys.request("endPunchTime");
+    $(function () {
+        laydate.render({ elem: '#beginTime', format: 'HH:mm', type:'time', value: beginTime });
+        laydate.render({ elem: '#endTime', format: 'HH:mm', type: 'time', value: endTime });
+        laydate.render({ elem: '#firstPunchTime', format: 'HH:mm', type: 'time', value: beginPunchTime });
+        laydate.render({ elem: '#lastPunchTime', format: 'HH:mm', type: 'time', value: endPunchTime });
+        
+        $("#userStatus").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusEnum).EnumToDictionaryString())) });
+        $("#gender").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.GenderTypeEnum).EnumToDictionaryString())) });
+
+        $("#role").ysCheckBox({
+            url: '@Url.Content("~/SystemManage/Role/GetListJson")',
+            key: "Id",
+            value: "RoleName"
+        })
+
+        $("#positionId").ysComboBox({
+            url: '@Url.Content("~/OrganizationManage/Position/GetListJson")',
+            key: "Id",
+            value: "PositionName",
+            class: "form-control",
+            multiple: true
+        });
+
+        $("#beginReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+        $("#endReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+        $("#dailyReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+
+        $("#typeId").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.UserTypeEnum).EnumToDictionaryString()))
+        });
+
+        $('#departmentId').ysComboBoxTree({ url: '@Url.Content("~/OrganizationManage/Department/GetDepartmentTreeListJson")' });
+
+        laydate.render({ elem: '#birthday', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#hireDate', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#terminalDate', format: 'yyyy-MM-dd' });
+
+        getForm(id, userId, punchDate);
+
+        $("#form").validate({
+            rules: {
+                userName: { required: true },
+                password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                mobile: { isPhone: false },
+                email: { email: true }
+            }
+        });
+    });
+
+    function getForm(id, userId, punchDate) {
+        ys.ajax({
+            url: '@Url.Content("~/OrganizationManage/Punch/GetFormJson")' + '?id=' + id +'&userId=' + userId + '&punchDate=' + punchDate,
+            type: "get",
+            success: function (obj) {
+                if (obj.Tag == 1) {
+                    var result = obj.Data;
+                    $("#form").setWebControls(result);
+                }
+            }
+        });
+    }
+
+    function saveForm(index) {
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            postData.DepartmentId = ys.getLastValue(postData.DepartmentId);
+            ys.ajax({
+                url: '@Url.Content("~/OrganizationManage/User/SaveFormJson")',
+                type: "post",
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
