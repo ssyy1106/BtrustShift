@@ -13,6 +13,7 @@ using YiSha.Util.Model;
 using YiSha.Cache.Factory;
 using YiSha.Web.Code;
 using YiSha.Admin.Web.Controllers;
+using YiSha.Util.Extension;
 
 namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
 {
@@ -57,6 +58,19 @@ namespace YiSha.Admin.Web.Areas.OrganizationManage.Controllers
             obj.Tag = 1;
             //obj.Data = await GetListJson(param);
             obj.Data = await punchService.GetAllInfo(id, userId, punchDate);
+            return Json(obj);
+        }
+        #endregion
+
+        #region 提交数据
+        [HttpPost]
+        [AuthorizeFilter("organization:punch:add,organization:punch:edit")]
+        public async Task<IActionResult> SaveFormJson(PunchProblemEntity entity)
+        {
+            TData<string> obj = new TData<string>();
+            obj.Data = entity.Id.ParseToString();
+            obj.Tag = 1;
+            await punchService.SaveForm(entity);
             return Json(obj);
         }
         #endregion

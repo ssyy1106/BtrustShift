@@ -42,6 +42,7 @@ namespace YiSha.Service.OrganizationManage
         {
             UserEntity user = await userService.GetEntity(userId);
             PunchProblemEntity problem = new();
+            // problem.Punches = new();
             if (id > 0)
             {
                 problem = await GetEntity(id);
@@ -55,12 +56,12 @@ namespace YiSha.Service.OrganizationManage
             problem.RealName = user.RealName;
 
             var strSql = new StringBuilder();
-            FilterPunches(strSql, userId, punchDate);
+            FilterPunches(strSql, user.BtrustId, punchDate);
             var listPunchEnum = await this.BaseRepository().FindList<PunchEntity>(strSql.ToString());
             List<PunchEntity> listPunch = listPunchEnum.ToList();
             foreach(PunchEntity punch in listPunch)
             {
-                problem.Punches.Add(punch.Year + "-" + punch.Month + "-" + punch.Day);
+                problem.Punches.Add(punch.Year + "-" + punch.Month + "-" + punch.Day + " " + punch.Hour + ":" + punch.Minute + "\n");
             }
             return problem;
         }
@@ -198,6 +199,32 @@ namespace YiSha.Service.OrganizationManage
         }
         #endregion
 
+        #region 提交数据
+        public async Task SaveForm(PunchProblemEntity entity)
+        {
+            var db = await this.BaseRepository().BeginTrans();
+            try
+            {
+                if (entity.Id.IsNullOrZero())
+                {
+                    await entity.Create();
+                    await db.Insert(entity);
+                }
+                else
+                {
+                    await entity.Modify();
+                    await db.Update(entity);
+                }
+                await db.CommitTrans();
+            }
+            catch (Exception e)
+            {
+                await db.RollbackTrans();
+                throw;
+            }
+        }
+        #endregion
+
         #region 私有方法
         private void calculateStatus(PunchAllEntity val, List<PunchProblemEntity> punchProblem, string periodBegin)
         {
@@ -313,13 +340,13 @@ namespace YiSha.Service.OrganizationManage
             return -1;
         }
 
-        private void FilterPunches(StringBuilder strSql, long btrustId, string punchDate)
+        private void FilterPunches(StringBuilder strSql, string btrustId, string punchDate)
         {
             string year = punchDate.Substring(0, 4);
             string month = punchDate.Substring(5, 2);
             string day = punchDate.Substring(8, 2);
-            strSql.Append(@"select BtrustId, Year, Month, Day, Hour, Minute from Syspunch where BtrustId = "
-                          + btrustId + " and Year = " + year + " and Month = " + month + " and Day=" + day);
+            strSql.Append(@"select BtrustId, Year, Month, Day, Hour, Minute from Syspunch where BtrustId = '"
+                          + btrustId + "' and Year = " + year + " and Month = " + month + " and Day=" + day);
             return;
         }
         private List<DbParameter> ListFilterPunchProblem(PunchParam param, StringBuilder strSql)
@@ -335,7 +362,7 @@ namespace YiSha.Service.OrganizationManage
                     int month = int.Parse(param.PeriodBegin.Substring(5, 2));
                     int day = int.Parse(param.PeriodBegin.Substring(8, 2));
                     DateTime beginDate = new DateTime(year, month, day);
-                    DateTime endDate = beginDate.AddDays(7);
+                    DateTime endDate = beginDate.AddDays(6);
                     strSql.Append(" AND CONVERT(DATETIME, SysPunchProblem.PunchDate)  <='"
                         + endDate.ToString("yyyy-MM-dd") + "' AND CONVERT(DATETIME, SysPunchProblem.PunchDate)  >='"
                         + beginDate.ToString("yyyy-MM-dd") + "'");
@@ -360,7 +387,7 @@ namespace YiSha.Service.OrganizationManage
                     int month = int.Parse(param.PeriodBegin.Substring(5, 2));
                     int day = int.Parse(param.PeriodBegin.Substring(8, 2));
                     DateTime beginDate = new DateTime(year, month, day);
-                    DateTime endDate = beginDate.AddDays(7);
+                    DateTime endDate = beginDate.AddDays(6);
                     strSql.Append(" AND CONVERT(DATETIME, SysPunch.Year + "+ "'-'" + " + SysPunch.Month + "+ "'-'" + " + SysPunch.Day)  <='" 
                         + endDate.ToString("yyyy-MM-dd") + "' AND CONVERT(DATETIME, SysPunch.Year + " + "'-'" + " + SysPunch.Month + " + "'-'" + " + SysPunch.Day)  >='"
                         + beginDate.ToString("yyyy-MM-dd") + "'");

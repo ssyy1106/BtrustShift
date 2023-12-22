@@ -212,9 +212,18 @@
                                 let endTime = row["@(day)End"];
                                 let beginPunchTime = row["@(day)BeginPunch"];
                                 let endPunchTime = row["@(day)EndPunch"];
-                                if (row["@(day)BeginPunchStatus"] != 0) {
+                                if (row["@(day)BeginPunchStatus"] == 1) {
                                     return value + '<br>' + '<a class="badge badge-danger" onclick=showSaveForm("'
-                                        + id + '","' + userId + '","' + punchDate + '")>' + row["@(day)BeginPunch"] + '</a>';
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)BeginPunch"] + '</a>';
+                                } else if (row["@(day)BeginPunchStatus"] == 2) {
+                                    return value + '<br>' + '<a class="badge badge-warning" onclick=showSaveForm("'
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)BeginPunch"] + '</a>';
+                                } else if (row["@(day)BeginPunchStatus"] == 9) {
+                                    return value + '<br>' + '<a class="badge badge-success" onclick=showSaveForm("'
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)BeginPunch"] + '</a>';
                                 } else {
                                     return value + '<br>' + row["@(day)BeginPunch"];
                                 }
@@ -235,9 +244,18 @@
                                 let endTime = row["@(day)End"];
                                 let beginPunchTime = row["@(day)BeginPunch"];
                                 let endPunchTime = row["@(day)EndPunch"];
-                                if (row["@(day)EndPunchStatus"] != 0) {
+                                if (row["@(day)EndPunchStatus"] == 1) {
                                     return value + '<br>' + '<a class="badge badge-danger" onclick=showSaveForm("'
-                                        + id + '","' + userId + '","' + punchDate + '")>' + row["@(day)EndPunch"] + '</a>';
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)EndPunch"] + '</a>';
+                                } else if (row["@(day)EndPunchStatus"] == 2) {
+                                    return value + '<br>' + '<a class="badge badge-warning" onclick=showSaveForm("'
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)EndPunch"] + '</a>';
+                                } else if (row["@(day)EndPunchStatus"] == 9) {
+                                    return value + '<br>' + '<a class="badge badge-success" onclick=showSaveForm("'
+                                        + id + '","' + userId + '","' + punchDate + '","' + beginTime
+                                        + '","' + endTime + '","' + beginPunchTime + '","' + endPunchTime + '")>' + row["@(day)EndPunch"] + '</a>';
                                 } else {
                                     return value + '<br>' + row["@(day)EndPunch"];
                                 }
@@ -258,22 +276,12 @@
         });
     }
 
-    function showSaveForm(id, userId, punchDate) {
-        alert(id + userId + punchDate);
-        // var id = 0;
-        // if (!bAdd) {
-        //     var selectedRow = $("#gridTable").bootstrapTable("getSelections");
-        //     if (!ys.checkRowEdit(selectedRow)) {
-        //         return;
-        //     }
-        //     else {
-        //         id = selectedRow[0].Id;
-        //     }
-        // }
+    function showSaveForm(id, userId, punchDate, beginTime, endTime, beginPunchTime, endPunchTime) {
         ys.openDialog({
             title: id > 0 ? "@localizer["Edit Punch Remark"].Value" : "@localizer["Add Punch Remark"].Value",
             content: '@Url.Content("~/OrganizationManage/Punch/PunchForm")' + '?id=' + id
-                + '&userId=' + userId + '&punchDate=' + punchDate,
+                + '&userId=' + userId + '&punchDate=' + punchDate + '&beginTime=' + beginTime
+                + '&endTime=' + endTime + '&beginPunchTime=' + beginPunchTime + '&endPunchTime=' + endPunchTime,
             callback: function (index, layero) {
                 var iframeWin = window[layero.find('iframe')[0]['name']];
                 iframeWin.saveForm(index);

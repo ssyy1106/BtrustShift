@@ -94,9 +94,14 @@ namespace YiSha.Entity.OrganizationManage
         [JsonConverter(typeof(StringJsonConverter))]
         public long? SundayPunchProblemId { get; set; }
     }
-
-    public class PunchProblemEntity : BaseEntity
+    [Table("SysPunchProblem")]
+    public class PunchProblemEntity : BaseExtensionEntity
     {
+        public PunchProblemEntity()
+        {
+            this.Punches = new();
+            //Punches.Add("abc");
+        }
         [JsonConverter(typeof(StringJsonConverter))]
         public long? UserId { get; set; }
         public string BtrustId { get; set; }

@@ -10,7 +10,7 @@ namespace YiSha.Enum.OrganizationManage
     public enum PunchReasonEnum
     {
         [Description("Attendence")]
-        ATT = 0,
+        ATT = 16,
         [Description("Late")]
         LT = 1,
         [Description("Leave Early")]
