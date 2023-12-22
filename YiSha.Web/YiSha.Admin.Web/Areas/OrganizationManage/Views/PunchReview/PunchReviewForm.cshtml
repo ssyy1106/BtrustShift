@@ -1,0 +1,142 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Real Name"].Value</label>
+            <div class="col-sm-4">
+                <input id="realName" col="RealName" type="text" class="form-control" disabled="disabled" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Btrust ID"].Value</label>
+            <div class="col-sm-4">
+                <input id="btrustId" col="BtrustId" type="text" class="form-control" disabled="disabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Shift Begin Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="beginTime" type="text" class="time-input" placeholder="@localizer["Begin Time"].Value" disabled="disabled" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Shift End Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="endTime" type="text" class="time-input" placeholder="@localizer["End Time"].Value" disabled="disabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["First Punch Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="firstPunchTime" type="text" class="time-input" placeholder="@localizer["First Punch Time"].Value" disabled="disabled" />
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Last Punch Time"].Value</label>
+            <div class="col-sm-4">
+                <input id="lastPunchTime" type="text" class="time-input" placeholder="@localizer["Last Punch Time"].Value" disabled="disabled" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Begin Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="beginReason" col="BeginReason"></div>
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["End Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="endReason" col="EndReason"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Daily Reason"].Value</label>
+            <div class="col-sm-4">
+                <div id="dailyReason" col="DailyReason"></div>
+            </div>
+            <label class="col-sm-2 control-label ">@localizer["Punch Date"].Value</label>
+            <div class="col-sm-4">
+                <input id="punchDate" col="PunchDate" type="text" class="form-control" disabled="disabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Punches"].Value</label>
+            <div class="col-sm-10">
+                <textarea id="punches" col="Punches" class="form-control" style="height:160px"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">@localizer["Remark"].Value</label>
+            <div class="col-sm-10">
+                <textarea id="remark" col="Remark" class="form-control" style="height:160px"></textarea>
+            </div>
+            <div id="userId" col="UserId" hidden="hidden"></div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var userId = ys.request("userId");
+    var punchDate = ys.request("punchDate");
+    var beginTime = ys.request("beginTime");
+    var endTime = ys.request("endTime");
+    var beginPunchTime = ys.request("beginPunchTime");
+    var endPunchTime = ys.request("endPunchTime");
+    $(function () {
+        laydate.render({ elem: '#beginTime', format: 'HH:mm', type: 'time', value: beginTime });
+        laydate.render({ elem: '#endTime', format: 'HH:mm', type: 'time', value: endTime });
+        laydate.render({ elem: '#firstPunchTime', format: 'HH:mm', type: 'time', value: beginPunchTime });
+        laydate.render({ elem: '#lastPunchTime', format: 'HH:mm', type: 'time', value: endPunchTime });
+        laydate.render({ elem: '#punchDate', format: 'yyyy-MM-dd', value: punchDate });
+
+
+        $("#beginReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+        $("#endReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+        $("#dailyReason").ysComboBox({
+            class: "form-control",
+            data: ys.getJson(@Html.Raw(typeof(YiSha.Enum.OrganizationManage.PunchReasonEnum).EnumToDictionaryString()))
+        });
+
+        getForm(id, userId, punchDate);
+    });
+
+    function getForm(id, userId, punchDate) {
+        ys.ajax({
+            url: '@Url.Content("~/OrganizationManage/PunchReview/GetFormJson")' + '?id=' + id + '&userId=' + userId + '&punchDate=' + punchDate,
+            type: "get",
+            success: function (obj) {
+                if (obj.Tag == 1) {
+                    var result = obj.Data;
+                    $("#form").setWebControls(result);
+                }
+            }
+        });
+    }
+
+    function saveForm(index) {
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id, status: 9 });
+            //postData.DepartmentId = ys.getLastValue(postData.DepartmentId);
+            ys.ajax({
+                url: '@Url.Content("~/OrganizationManage/PunchReview/SaveFormJson")',
+                type: "post",
+                data: postData,
+                success: function (obj) {
+                    if (obj.Tag == 1) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
